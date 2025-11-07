@@ -1,0 +1,271 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+// title, couponCode, expiryDate
+model Coupon {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  title      String
+  couponCode String
+  expiryDate DateTime
+  isActive   Boolean
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model style {
+  id             String   @id @default(auto()) @map("_id") @db.ObjectId
+  primaryColor   String?
+  secondaryColor String?
+  bgImage        String?  @default("https://utfs.io/f/aa568418-002c-40a1-b13f-a0fd7eef1353-9w6i5v.svg")
+  footerColor    String?
+  topBannerImage String?  @default("https://utfs.io/f/aa568418-002c-40a1-b13f-a0fd7eef1353-9w6i5v.svg")
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model Banner {
+  id              String   @id @default(auto()) @map("_id") @db.ObjectId
+  title           String?
+  link            String?
+  imageUrl        String   @default("https://utfs.io/f/aa568418-002c-40a1-b13f-a0fd7eef1353-9w6i5v.svg")
+  previewImageUrl String?  @default("https://utfs.io/f/aa568418-002c-40a1-b13f-a0fd7eef1353-9w6i5v.svg")
+  isActive        Boolean
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  productIds      String[] @default([])
+}
+
+model Brand {
+  id          String    @id @default(auto()) @map("_id") @db.ObjectId
+  title       String
+  slug        String    @unique
+  imageUrl    String?   @default("https://utfs.io/f/aa568418-002c-40a1-b13f-a0fd7eef1353-9w6i5v.svg")
+  description String?
+  isActive    Boolean   @default(true)
+  products    Product[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model Department {
+  id          String     @id @default(auto()) @map("_id") @db.ObjectId
+  title       String
+  slug        String     @unique
+  imageUrl       String
+  images      String[]   @default(["https://utfs.io/f/aa568418-002c-40a1-b13f-a0fd7eef1353-9w6i5v.svg"])
+  description String?
+  isActive    Boolean    @default(true)
+  categories  Category[]
+  products    Product[]
+  icons       String?
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+}
+
+model Category {
+  id            String        @id @default(auto()) @map("_id") @db.ObjectId
+  title         String
+  slug          String        @unique
+  imageUrl         String
+  images        String[]      @default(["https://utfs.io/f/aa568418-002c-40a1-b13f-a0fd7eef1353-9w6i5v.svg"])
+  description   String?
+  isActive      Boolean       @default(true)
+  departmentId  String        @db.ObjectId
+  department    Department    @relation(fields: [departmentId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  subCategories SubCategory[]
+  products      Product[]
+  icon          String?
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime?     @updatedAt
+}
+
+model SubCategory {
+  id          String    @id @default(auto()) @map("_id") @db.ObjectId
+  title       String
+  slug        String    @unique
+  imageUrl       String
+  description String?
+  isActive    Boolean   @default(true)
+  categoryId  String?   @db.ObjectId
+  category    Category? @relation(fields: [categoryId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  products    Product[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime? @updatedAt
+}
+
+model Product {
+  id             String   @id @default(auto()) @map("_id") @db.ObjectId
+  title          String
+  slug           String   @unique
+  imageUrl       String?  @default("https://utfs.io/f/aa568418-002c-40a1-b13f-a0fd7eef1353-9w6i5v.svg")
+  productImages  String[] @default(["https://utfs.io/f/aa568418-002c-40a1-b13f-a0fd7eef1353-9w6i5v.svg"])
+  description    String?
+  isActive       Boolean  @default(true)
+  isWholesale    Boolean
+  sku            String?
+  barcode        String?
+  productCode    String?
+  unit           String?
+  productPrice   Float
+  salePrice      Float?
+  wholesalePrice Float?
+  wholesaleQty   Int?
+  productStock   Int?
+  qty            Int?
+  isDiscount     Boolean  @default(false)
+  discount       Float?
+  tags           String[]
+
+  // Category relationships
+  categoryId    String?      @db.ObjectId
+  category      Category?    @relation(fields: [categoryId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  subCategoryId String?      @db.ObjectId
+  subCategory   SubCategory? @relation(fields: [subCategoryId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  departmentId  String       @db.ObjectId
+  department    Department   @relation(fields: [departmentId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  // Brand relationship
+  brandId String? @db.ObjectId
+  brand   Brand?  @relation(fields: [brandId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+
+  // Vendor relationship
+  vendorId String? @db.ObjectId
+  vendor   User?   @relation(fields: [vendorId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+
+  type       String?     @default("topdeals")
+  orderItems OrderItem[]
+  sales      Sale[]
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime?   @updatedAt
+}
+
+enum UserRole {
+  ADMIN
+  USER
+  SECRETARY
+  VENDOR
+}
+
+enum OrderStatus {
+  PENDING
+  PROCESSING
+  SHIPPED
+  DELIVERED
+  CANCELED
+}
+
+model User {
+  id                String       @id @default(auto()) @map("_id") @db.ObjectId
+  name              String?
+  email             String?      @unique
+  password          String?
+  emailVerified     Boolean      @default(false)
+  role              UserRole     @default(USER)
+  plan              String?
+  verificationToken String?
+  status            Boolean      @default(false)
+  profile           UserProfile?
+  orders            Order[]
+  products          Product[]
+  createdAt         DateTime     @default(now())
+  updatedAt         DateTime     @updatedAt
+  image             String?
+  Account           Account[]
+  Session           Session[]
+}
+
+model UserProfile {
+  id          String    @id @default(auto()) @map("_id") @db.ObjectId
+  image       String?
+  username    String?
+  phoneNumber String?
+  dateOfBirth DateTime?
+  bio         String?
+  address     String?
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId      String    @unique @db.ObjectId
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model Order {
+  id               String      @id @default(auto()) @map("_id") @db.ObjectId
+  userId           String      @db.ObjectId
+  name             String
+  email            String
+  phone            String
+  address          String?
+  orderNumber      String?
+  totalOrderAmount Int?
+  paymentMethod    String
+  orderItems       OrderItem[]
+  orderStatus      OrderStatus @default(PROCESSING)
+  createdAt        DateTime    @default(now())
+  updatedAt        DateTime    @updatedAt
+  user             User        @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  sales            Sale[]
+}
+
+model OrderItem {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  orderId   String   @db.ObjectId
+  productId String   @db.ObjectId
+  imageUrl  String?
+  title     String?
+  quantity  Int
+  price     Float
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+}
+
+model Sale {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  orderId      String   @db.ObjectId
+  productId    String   @db.ObjectId
+  total        Float
+  productTitle String
+  productImage String
+  productPrice Float
+  productQty   Int
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  order        Order    @relation(fields: [orderId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  product      Product  @relation(fields: [productId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+}
+
+model Account {
+  id                String  @id @default(auto()) @map("_id") @db.ObjectId
+  userId            String  @db.ObjectId
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.String
+  access_token      String? @db.String
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.String
+  session_state     String?
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  sessionToken String   @unique
+  userId       String   @db.ObjectId
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
