@@ -86,8 +86,8 @@ export default function ModernHeader() {
     <>
       {/* Top Bar - Announcement/Promo */}
       <div className="bg-gradient-to-r from-orange-500 to-pink-500 text-white py-2 px-4 text-center text-sm font-medium">
-        <span className="hidden sm:inline">🎉 Free Shipping on Orders Over UGX 100,000 | </span>
-        <span>24/7 Customer Support Available</span>
+        <span className="hidden sm:inline">🎁 A Gift Today, A Memory Forever!! | </span>
+        <span>Share a Gift Hamper from Kyaja</span>
       </div>
 
       {/* Main Header */}
