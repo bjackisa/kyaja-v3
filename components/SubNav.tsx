@@ -92,12 +92,12 @@ export default function ModernHeader() {
   return (
     <>
       {/* Rotating Promotional Bar */}
-      <div className="bg-gradient-to-r from-orange-500 via-pink-500 to-purple-500 text-white py-2.5 px-4 overflow-hidden relative">
-        <div className="max-w-screen-2xl mx-auto">
+      <div className="bg-gradient-to-r from-orange-500 via-pink-500 to-purple-500 text-white py-3 px-4 overflow-hidden relative">
+        <div className="max-w-screen-2xl mx-auto relative h-6">
           {PROMO_MESSAGES.map((message, index) => (
             <div
               key={index}
-              className={`text-center text-sm font-medium transition-all duration-500 absolute inset-0 flex items-center justify-center ${
+              className={`text-center text-sm font-medium transition-all duration-700 absolute inset-0 flex items-center justify-center ${
                 index === currentPromoIndex
                   ? "opacity-100 translate-y-0"
                   : "opacity-0 translate-y-4"
@@ -106,13 +106,20 @@ export default function ModernHeader() {
                 pointerEvents: index === currentPromoIndex ? "auto" : "none",
               }}
             >
-              {message}
+              <div className="hidden sm:block whitespace-nowrap">
+                {message}
+              </div>
+              <div className="sm:hidden w-full overflow-hidden">
+                <div className="animate-scroll-text whitespace-nowrap inline-block">
+                  {message}
+                </div>
+              </div>
             </div>
           ))}
         </div>
         
-        {/* Promo Navigation Dots */}
-        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 flex gap-1.5 pb-1">
+        {/* Promo Navigation Dots - Desktop Only */}
+        <div className="hidden sm:flex absolute bottom-1 left-1/2 -translate-x-1/2 gap-1.5">
           {PROMO_MESSAGES.map((_, index) => (
             <button
               key={index}
@@ -235,23 +242,23 @@ export default function ModernHeader() {
 
         {/* Mobile Navigation - Simplified */}
         <div className="lg:hidden">
-          <div className="px-4 py-3">
-            {/* Logo Only */}
-            <Link href="/" className="flex items-center justify-center gap-3 group mb-3">
+          <div className="px-3 py-2">
+            {/* Logo Only - Compact */}
+            <Link href="/" className="flex items-center justify-center gap-2 group mb-2">
               <Image
                 src="/logo.svg"
                 alt="Kyaja"
-                width={40}
-                height={40}
-                className="w-10 h-10 transition-transform group-hover:scale-110"
+                width={32}
+                height={32}
+                className="w-8 h-8"
               />
               <div>
-                <h1 className="text-xl font-black text-gray-900 tracking-tight">KYAJA</h1>
-                <p className="text-xs text-gray-500 -mt-0.5">Shop Smart, Live Better</p>
+                <h1 className="text-lg font-black text-gray-900 tracking-tight leading-none">KYAJA</h1>
+                <p className="text-[10px] text-gray-500 leading-none">Shop Smart, Live Better</p>
               </div>
             </Link>
 
-            {/* Search Bar */}
+            {/* Search Bar - Compact */}
             <div className="relative">
               <input
                 type="text"
@@ -259,12 +266,12 @@ export default function ModernHeader() {
                 onChange={(e) => setSearchQuery(e.target.value)}
                 onKeyPress={handleKeyPress}
                 placeholder="Search products..."
-                className="w-full h-11 pl-10 pr-4 rounded-full border-2 border-gray-200 focus:border-orange-500 focus:outline-none transition-colors bg-gray-50 focus:bg-white text-gray-900"
+                className="w-full h-9 pl-9 pr-16 rounded-full border border-gray-300 focus:border-orange-500 focus:outline-none transition-colors bg-gray-50 focus:bg-white text-gray-900 text-sm"
               />
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
               <button
                 onClick={handleSearchSubmit}
-                className="absolute right-1 top-1/2 -translate-y-1/2 bg-orange-500 hover:bg-orange-600 text-white px-4 py-1.5 rounded-full text-sm font-medium transition-colors"
+                className="absolute right-1 top-1/2 -translate-y-1/2 bg-orange-500 hover:bg-orange-600 text-white px-3 py-1 rounded-full text-xs font-medium transition-colors"
               >
                 Search
               </button>
@@ -508,12 +515,25 @@ export default function ModernHeader() {
           }
         }
 
+        @keyframes scroll-text {
+          0% {
+            transform: translateX(100%);
+          }
+          100% {
+            transform: translateX(-100%);
+          }
+        }
+
         .animate-slide-in-right {
           animation: slide-in-right 0.3s ease-out;
         }
 
         .animate-scale-in {
           animation: scale-in 0.2s ease-out;
+        }
+
+        .animate-scroll-text {
+          animation: scroll-text 12s linear infinite;
         }
       `}</style>
     </>
