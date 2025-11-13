@@ -26,6 +26,12 @@ import CategoryNav from "./ShopHeader";
 import { MobileNavBar } from "./MobileNavBar";
 import UserAvatar from "./UserAvatar";
 
+const PROMO_MESSAGES = [
+  "🎁 A Gift Today, A Memory Forever!! || Share a Gift Hamper from Kyaja",
+  "⚡ Expedited Delivery within Greater Kampala || Get your items in 3 hours",
+  "🔥 Black November Deals || Get up to 40% off Genuine Products this Month!!"
+];
+
 export default function ModernHeader() {
   const { departments, isLoading } = useFetchDepartments();
   const { data: categories, isLoading: isLoadingCat } = useCategories();
@@ -38,6 +44,7 @@ export default function ModernHeader() {
   const [showSupportModal, setShowSupportModal] = useState(false);
   const [profile, setProfile] = useState(null);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [currentPromoIndex, setCurrentPromoIndex] = useState(0);
   
   const user = Session?.user;
   const profileImage = profile?.image || "https://utfs.io/f/8b034fb4-1f45-425a-8c57-a7a68835311f-2558r.png";
@@ -48,6 +55,13 @@ export default function ModernHeader() {
     };
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentPromoIndex((prev) => (prev + 1) % PROMO_MESSAGES.length);
+    }, 4000);
+    return () => clearInterval(interval);
   }, []);
 
   useEffect(() => {
@@ -63,13 +77,6 @@ export default function ModernHeader() {
     fetchProfile();
   }, [user?.id]);
 
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (searchQuery.trim()) {
-      router.push(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
-    }
-  };
-
   const handleSearchSubmit = () => {
     if (searchQuery.trim()) {
       router.push(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
@@ -84,26 +91,50 @@ export default function ModernHeader() {
 
   return (
     <>
-      {/* Top Bar - Announcement/Promo */}
-      <div className="bg-gradient-to-r from-orange-500 to-pink-500 text-white py-2 px-4 text-center text-sm font-medium">
-        <span className="hidden sm:inline">🎁 A Gift Today, A Memory Forever!! | </span>
-        <span>Share a Gift Hamper from Kyaja</span>
+      {/* Rotating Promotional Bar */}
+      <div className="bg-gradient-to-r from-orange-500 via-pink-500 to-purple-500 text-white py-2.5 px-4 overflow-hidden relative">
+        <div className="max-w-screen-2xl mx-auto">
+          {PROMO_MESSAGES.map((message, index) => (
+            <div
+              key={index}
+              className={`text-center text-sm font-medium transition-all duration-500 absolute inset-0 flex items-center justify-center ${
+                index === currentPromoIndex
+                  ? "opacity-100 translate-y-0"
+                  : "opacity-0 translate-y-4"
+              }`}
+              style={{
+                pointerEvents: index === currentPromoIndex ? "auto" : "none",
+              }}
+            >
+              {message}
+            </div>
+          ))}
+        </div>
+        
+        {/* Promo Navigation Dots */}
+        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 flex gap-1.5 pb-1">
+          {PROMO_MESSAGES.map((_, index) => (
+            <button
+              key={index}
+              onClick={() => setCurrentPromoIndex(index)}
+              className={`w-1.5 h-1.5 rounded-full transition-all ${
+                index === currentPromoIndex
+                  ? "bg-white w-4"
+                  : "bg-white/50 hover:bg-white/75"
+              }`}
+              aria-label={`Go to promotion ${index + 1}`}
+            />
+          ))}
+        </div>
       </div>
 
       {/* Main Header */}
       <header className={`sticky top-0 z-50 bg-white border-b transition-shadow duration-300 ${isScrolled ? 'shadow-lg' : 'shadow-sm'}`}>
-        {/* Primary Navigation */}
-        <div className="max-w-screen-2xl mx-auto px-4 lg:px-6">
-          <div className="flex items-center justify-between h-20">
-            {/* Left Section - Logo & Mobile Menu */}
-            <div className="flex items-center gap-4">
-              <button
-                onClick={() => setShowMobileMenu(true)}
-                className="lg:hidden p-2 hover:bg-gray-100 rounded-lg transition-colors"
-              >
-                <Menu className="w-6 h-6 text-gray-700" />
-              </button>
-
+        {/* Desktop Navigation */}
+        <div className="hidden lg:block">
+          <div className="max-w-screen-2xl mx-auto px-4 lg:px-6">
+            <div className="flex items-center justify-between h-20">
+              {/* Left Section - Logo */}
               <Link href="/" className="flex items-center gap-3 group">
                 <div className="relative">
                   <Image
@@ -114,111 +145,113 @@ export default function ModernHeader() {
                     className="w-12 h-12 transition-transform group-hover:scale-110"
                   />
                 </div>
-                <div className="hidden sm:block">
+                <div>
                   <h1 className="text-2xl font-black text-gray-900 tracking-tight">KYAJA</h1>
                   <p className="text-xs text-gray-500 -mt-1">Shop Smart, Live Better</p>
                 </div>
               </Link>
-            </div>
 
-            {/* Center Section - Search (Desktop) */}
-            <div className="hidden lg:flex flex-1 max-w-2xl mx-8">
-              <div className="w-full">
-                <div className="relative group">
-                  <input
-                    type="text"
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    onKeyPress={handleKeyPress}
-                    placeholder="Search for products, brands, categories..."
-                    className="w-full h-12 pl-12 pr-12 rounded-full border-2 border-gray-200 focus:border-orange-500 focus:outline-none transition-colors bg-gray-50 focus:bg-white text-gray-900 placeholder-gray-500"
-                  />
-                  <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-orange-500 transition-colors" />
-                  <button
-                    onClick={handleSearchSubmit}
-                    className="absolute right-2 top-1/2 -translate-y-1/2 bg-orange-500 hover:bg-orange-600 text-white px-6 py-2 rounded-full font-medium transition-colors"
-                  >
-                    Search
-                  </button>
+              {/* Center Section - Search */}
+              <div className="flex flex-1 max-w-2xl mx-8">
+                <div className="w-full">
+                  <div className="relative group">
+                    <input
+                      type="text"
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      onKeyPress={handleKeyPress}
+                      placeholder="Search for products, brands, categories..."
+                      className="w-full h-12 pl-12 pr-12 rounded-full border-2 border-gray-200 focus:border-orange-500 focus:outline-none transition-colors bg-gray-50 focus:bg-white text-gray-900 placeholder-gray-500"
+                    />
+                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-orange-500 transition-colors" />
+                    <button
+                      onClick={handleSearchSubmit}
+                      className="absolute right-2 top-1/2 -translate-y-1/2 bg-orange-500 hover:bg-orange-600 text-white px-6 py-2 rounded-full font-medium transition-colors"
+                    >
+                      Search
+                    </button>
+                  </div>
                 </div>
               </div>
-            </div>
 
-            {/* Right Section - Actions */}
-            <div className="flex items-center gap-2 lg:gap-4">
-              {/* Location (Desktop) */}
-              <button className="hidden xl:flex items-center gap-2 px-3 py-2 hover:bg-gray-100 rounded-lg transition-colors group">
-                <MapPin className="w-5 h-5 text-gray-600 group-hover:text-orange-500 transition-colors" />
-                <div className="text-left">
-                  <p className="text-xs text-gray-500">Deliver to</p>
-                  <p className="text-sm font-semibold text-gray-900">Uganda</p>
-                </div>
-              </button>
-
-              {/* Account Section */}
-              {user ? (
-                <div className="hidden lg:block">
-                  <UserAvatar user={user} />
-                </div>
-              ) : (
-                <Link
-                  href="/login"
-                  className="hidden lg:flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors group"
-                >
-                  <LogIn className="w-5 h-5 text-gray-700 group-hover:text-orange-500 transition-colors" />
+              {/* Right Section - Actions */}
+              <div className="flex items-center gap-2 lg:gap-4">
+                {/* Location */}
+                <button className="hidden xl:flex items-center gap-2 px-3 py-2 hover:bg-gray-100 rounded-lg transition-colors group">
+                  <MapPin className="w-5 h-5 text-gray-600 group-hover:text-orange-500 transition-colors" />
                   <div className="text-left">
-                    <p className="text-xs text-gray-500">Hello, Sign in</p>
-                    <p className="text-sm font-semibold text-gray-900">Account</p>
+                    <p className="text-xs text-gray-500">Deliver to</p>
+                    <p className="text-sm font-semibold text-gray-900">Uganda</p>
                   </div>
-                </Link>
-              )}
+                </button>
 
-              {/* Mobile Account */}
-              <button
-                onClick={() => setShowMobileMenu(true)}
-                className="lg:hidden p-2 hover:bg-gray-100 rounded-lg transition-colors"
-              >
+                {/* Account Section */}
                 {user ? (
-                  <Avatar className="w-8 h-8">
-                    <AvatarImage src={profileImage} className="object-cover" />
-                    <AvatarFallback className="bg-orange-500 text-white">
-                      {user.name?.[0] || "U"}
-                    </AvatarFallback>
-                  </Avatar>
+                  <UserAvatar user={user} />
                 ) : (
-                  <User className="w-6 h-6 text-gray-700" />
+                  <Link
+                    href="/login"
+                    className="flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors group"
+                  >
+                    <LogIn className="w-5 h-5 text-gray-700 group-hover:text-orange-500 transition-colors" />
+                    <div className="text-left">
+                      <p className="text-xs text-gray-500">Hello, Sign in</p>
+                      <p className="text-sm font-semibold text-gray-900">Account</p>
+                    </div>
+                  </Link>
                 )}
-              </button>
 
-              {/* Support (Desktop) */}
-              <button
-                onClick={() => setShowSupportModal(true)}
-                className="hidden lg:flex items-center gap-2 px-3 py-2 hover:bg-gray-100 rounded-lg transition-colors group"
-              >
-                <MessageSquare className="w-5 h-5 text-gray-600 group-hover:text-orange-500 transition-colors" />
-                <div className="text-left">
-                  <p className="text-xs text-gray-500">Customer</p>
-                  <p className="text-sm font-semibold text-gray-900">Support</p>
-                </div>
-              </button>
+                {/* Support */}
+                <button
+                  onClick={() => setShowSupportModal(true)}
+                  className="flex items-center gap-2 px-3 py-2 hover:bg-gray-100 rounded-lg transition-colors group"
+                >
+                  <MessageSquare className="w-5 h-5 text-gray-600 group-hover:text-orange-500 transition-colors" />
+                  <div className="text-left">
+                    <p className="text-xs text-gray-500">Customer</p>
+                    <p className="text-sm font-semibold text-gray-900">Support</p>
+                  </div>
+                </button>
 
-              {/* Cart */}
-              <Link
-                href="/cart"
-                className="relative p-2 hover:bg-gray-100 rounded-lg transition-colors group"
-              >
-                <ShoppingCart className="w-6 h-6 text-gray-700 group-hover:text-orange-500 transition-colors" />
-                {cartItems.length > 0 && (
-                  <span className="absolute -top-1 -right-1 bg-orange-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center animate-pulse">
-                    {cartItems.length}
-                  </span>
-                )}
-              </Link>
+                {/* Cart */}
+                <Link
+                  href="/cart"
+                  className="relative p-2 hover:bg-gray-100 rounded-lg transition-colors group"
+                >
+                  <ShoppingCart className="w-6 h-6 text-gray-700 group-hover:text-orange-500 transition-colors" />
+                  {cartItems.length > 0 && (
+                    <span className="absolute -top-1 -right-1 bg-orange-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center animate-pulse">
+                      {cartItems.length}
+                    </span>
+                  )}
+                </Link>
+              </div>
             </div>
           </div>
 
-          {/* Mobile Search Bar */}
-          <div className="lg:hidden pb-4">
+          {/* Category Navigation */}
+          <CategoryNav departments={departments} isLoading={isLoading || isLoadingCat} />
+        </div>
+
+        {/* Mobile Navigation - Simplified */}
+        <div className="lg:hidden">
+          <div className="px-4 py-3">
+            {/* Logo Only */}
+            <Link href="/" className="flex items-center justify-center gap-3 group mb-3">
+              <Image
+                src="/logo.svg"
+                alt="Kyaja"
+                width={40}
+                height={40}
+                className="w-10 h-10 transition-transform group-hover:scale-110"
+              />
+              <div>
+                <h1 className="text-xl font-black text-gray-900 tracking-tight">KYAJA</h1>
+                <p className="text-xs text-gray-500 -mt-0.5">Shop Smart, Live Better</p>
+              </div>
+            </Link>
+
+            {/* Search Bar */}
             <div className="relative">
               <input
                 type="text"
@@ -229,12 +262,15 @@ export default function ModernHeader() {
                 className="w-full h-11 pl-10 pr-4 rounded-full border-2 border-gray-200 focus:border-orange-500 focus:outline-none transition-colors bg-gray-50 focus:bg-white text-gray-900"
               />
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+              <button
+                onClick={handleSearchSubmit}
+                className="absolute right-1 top-1/2 -translate-y-1/2 bg-orange-500 hover:bg-orange-600 text-white px-4 py-1.5 rounded-full text-sm font-medium transition-colors"
+              >
+                Search
+              </button>
             </div>
           </div>
         </div>
-
-        {/* Category Navigation */}
-        <CategoryNav departments={departments} isLoading={isLoading || isLoadingCat} />
       </header>
 
       {/* Mobile Sidebar Menu */}
