@@ -3,46 +3,65 @@
 import {
   Search,
   MapPin,
-  ChevronDown,
   ShoppingCart,
   MessageSquare,
-  CornerDownLeft,
   User,
   LogIn,
   X,
   Menu,
+  Phone,
+  Package,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-
 import { useEffect, useState } from "react";
-import CategoryNav from "./ShopHeader";
-import { MobileNavBar } from "./MobileNavBar";
 import { useSession } from "next-auth/react";
-import UserAvatar from "./UserAvatar";
-import { Modal } from "flowbite-react";
-import { useFetchDepartments } from "@/hooks/use-departments";
 import { useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
+import { useFetchDepartments } from "@/hooks/use-departments";
 import { useCategories } from "@/hooks/use-categories";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
-import { Profile } from "next-auth";
 import { getProfileByUserId } from "@/actions/UpdateUser";
+import CategoryNav from "./ShopHeader";
+import { MobileNavBar } from "./MobileNavBar";
+import UserAvatar from "./UserAvatar";
 
-export default function SubNav() {
+export default function ModernHeader() {
   const { departments, isLoading } = useFetchDepartments();
   const { data: categories, isLoading: isLoadingCat } = useCategories();
-
   const cartItems = useSelector((store: any) => store.cart);
   const router = useRouter();
-  const [searchQuery, setSearchQuery] = useState("");
   const { data: Session } = useSession();
-  const [openModal, setOpenModal] = useState(false);
+  
+  const [searchQuery, setSearchQuery] = useState("");
   const [showMobileMenu, setShowMobileMenu] = useState(false);
+  const [showSupportModal, setShowSupportModal] = useState(false);
   const [profile, setProfile] = useState(null);
-
-  const [searchCategory, setSearchCategory] = useState("All");
+  const [isScrolled, setIsScrolled] = useState(false);
+  
   const user = Session?.user;
+  const profileImage = profile?.image || "https://utfs.io/f/8b034fb4-1f45-425a-8c57-a7a68835311f-2558r.png";
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 10);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      if (!user?.id) return;
+      try {
+        const fetchedProfile = await getProfileByUserId(user.id);
+        setProfile(fetchedProfile);
+      } catch (error) {
+        console.error("Error fetching profile:", error);
+      }
+    };
+    fetchProfile();
+  }, [user?.id]);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -51,343 +70,416 @@ export default function SubNav() {
     }
   };
 
-  const profileImage =
-    profile?.image ||
-    "https://utfs.io/f/8b034fb4-1f45-425a-8c57-a7a68835311f-2558r.png";
-  useEffect(() => {
-    const fetchProfile = async () => {
-      try {
-        const fetchedProfile: Profile = await getProfileByUserId(user.id);
-        setProfile(fetchedProfile);
-      } catch (error) {
-        console.error("Error fetching profile:", error);
-      }
-    };
+  const handleSearchSubmit = () => {
+    if (searchQuery.trim()) {
+      router.push(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
+    }
+  };
 
-    fetchProfile();
-  }, [user?.id]);
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter") {
+      handleSearchSubmit();
+    }
+  };
+
   return (
-    <header className="flex flex-col h-[60px] w-full">
-      <div className="flex items-center bg-[#131921] px-4 text-white py-2 justify-between md:justify-center">
-        {/* Logo */}
-        <div className="flex items-center gap-1">
-          <MobileNavBar allCategories={categories} />
+    <>
+      {/* Top Bar - Announcement/Promo */}
+      <div className="bg-gradient-to-r from-orange-500 to-pink-500 text-white py-2 px-4 text-center text-sm font-medium">
+        <span className="hidden sm:inline">🎉 Free Shipping on Orders Over UGX 100,000 | </span>
+        <span>24/7 Customer Support Available</span>
+      </div>
 
-          <a
-            href="/"
-            className="flex h-[50px] items-center border border-transparent px-2 py-1 hover:border-white"
-          >
-            <a className="flex items-center lg:gap-0 md:gap-0 gap-2" href="/">
-              <Image
-                src={"/logo.svg"}
-                alt="kyaja logo"
-                className="lg:w-[4rem] w-[3rem] h-[3rem] lg:h-[4rem] mt-4 "
-                width={40}
-                height={40}
-              />
-              <div className="flex flex-col">
-                <span className="font-black text-xl uppercase text-white lg:block md:block hidden">
-                  Kyaja
-                </span>
-              </div>
-            </a>
-          </a>
-        </div>
+      {/* Main Header */}
+      <header className={`sticky top-0 z-50 bg-white border-b transition-shadow duration-300 ${isScrolled ? 'shadow-lg' : 'shadow-sm'}`}>
+        {/* Primary Navigation */}
+        <div className="max-w-screen-2xl mx-auto px-4 lg:px-6">
+          <div className="flex items-center justify-between h-20">
+            {/* Left Section - Logo & Mobile Menu */}
+            <div className="flex items-center gap-4">
+              <button
+                onClick={() => setShowMobileMenu(true)}
+                className="lg:hidden p-2 hover:bg-gray-100 rounded-lg transition-colors"
+              >
+                <Menu className="w-6 h-6 text-gray-700" />
+              </button>
 
-        {/* Deliver To */}
-        <button className="ml-2 hidden h-[50px] border border-transparent px-2 py-1 hover:border-white sm:flex cursor-not-allowed">
-          <div className="flex items-end">
-            <MapPin className="mr-1 h-4 w-4" />
-            <div className="flex flex-col">
-              <span className="text-xs text-gray-300">Deliver to</span>
-              <span className="text-sm font-bold">Uganda</span>
+              <Link href="/" className="flex items-center gap-3 group">
+                <div className="relative">
+                  <Image
+                    src="/logo.svg"
+                    alt="Kyaja"
+                    width={48}
+                    height={48}
+                    className="w-12 h-12 transition-transform group-hover:scale-110"
+                  />
+                </div>
+                <div className="hidden sm:block">
+                  <h1 className="text-2xl font-black text-gray-900 tracking-tight">KYAJA</h1>
+                  <p className="text-xs text-gray-500 -mt-1">Shop Smart, Live Better</p>
+                </div>
+              </Link>
             </div>
-          </div>
-        </button>
 
-        {/* Search */}
-        <div className="mx-4 flex-1 items-center md:flex hidden relative">
-          <form onSubmit={handleSearch} className="flex h-10 w-full rounded-md">
-            <button
-              type="button"
-              className="flex items-center justify-between rounded-l-md bg-[#f3f3f3] px-3 text-sm text-gray-700 hover:bg-gray-200"
-            >
-              {searchCategory}
-              <ChevronDown className="ml-1 h-4 w-4" />
-            </button>
-            <input
-              type="text"
-              className="flex-1 border-none px-2 text-black outline-none"
-              placeholder="Search products,categories..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-            <button
-              type="submit"
-              className="flex w-[45px] items-center justify-center rounded-r-md bg-[#febd69] hover:bg-orange-500"
-            >
-              <Search className="h-5 w-5 text-[#131921]" />
-            </button>
-          </form>
-        </div>
-
-        {/* Right Navigation */}
-        <div className="flex items-center">
-          {/* Language */}
-          <div className="hidden h-[50px] border border-transparent px-2 py-1 hover:border-white lg:flex cursor-not-allowed">
-            <div className="flex items-center">
-              <Image
-                src="https://cdn-icons-png.flaticon.com/128/555/555670.png"
-                alt="US Flag"
-                width={24}
-                height={16}
-                className="mr-1"
-              />
-              <span className="text-sm">EN</span>
-              <ChevronDown className="ml-1 h-3 w-3" />
-            </div>
-          </div>
-
-          {/* Account & Lists - Desktop */}
-          {!user && (
-            <Link
-              href="/login"
-              className="hidden h-[50px] border border-transparent px-2 py-1 hover:border-white lg:block"
-            >
-              <div className="flex flex-col">
-                <span className="text-xs">Hello, sign in</span>
-                <div className="flex items-center">
-                  <span className="text-sm font-bold">Account & Lists</span>
-                  <ChevronDown className="ml-1 h-3 w-3" />
+            {/* Center Section - Search (Desktop) */}
+            <div className="hidden lg:flex flex-1 max-w-2xl mx-8">
+              <div className="w-full">
+                <div className="relative group">
+                  <input
+                    type="text"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    onKeyPress={handleKeyPress}
+                    placeholder="Search for products, brands, categories..."
+                    className="w-full h-12 pl-12 pr-12 rounded-full border-2 border-gray-200 focus:border-orange-500 focus:outline-none transition-colors bg-gray-50 focus:bg-white text-gray-900 placeholder-gray-500"
+                  />
+                  <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-orange-500 transition-colors" />
+                  <button
+                    onClick={handleSearchSubmit}
+                    className="absolute right-2 top-1/2 -translate-y-1/2 bg-orange-500 hover:bg-orange-600 text-white px-6 py-2 rounded-full font-medium transition-colors"
+                  >
+                    Search
+                  </button>
                 </div>
               </div>
-            </Link>
-          )}
-
-          {/* Mobile Account Button */}
-          <button
-            onClick={() => setShowMobileMenu(true)}
-            className="lg:hidden h-[50px] border border-transparent px-2 py-1 hover:border-white flex items-center"
-          >
-            {user ? (
-              <div className="w-8 h-8 rounded-full bg-[#febd69] flex items-center justify-center">
-                <Avatar>
-                  <AvatarImage className="object-cover" src={profileImage} />
-                  <AvatarFallback>CN</AvatarFallback>
-                </Avatar>
-              </div>
-            ) : (
-              <LogIn className="h-6 w-6" />
-            )}
-          </button>
-          {user && (
-            <div className="lg:flex hidden">
-              <UserAvatar user={user} />
             </div>
-          )}
-          {/* Returns & Orders */}
-          <button
-            onClick={() => setOpenModal(true)}
-            className="hidden h-[50px] border border-transparent px-2 py-1 hover:border-white lg:block"
-          >
-            <div className="flex flex-col">
-              <span className="text-xs">Returns</span>
-              <span className="text-sm font-bold">& Orders</span>
-            </div>
-          </button>
 
-          {/* Cart */}
-          <Link
-            href="/cart"
-            className="flex h-[50px] items-center border border-transparent px-2 py-1 hover:border-white"
-          >
-            <div className="relative flex items-end">
-              <ShoppingCart className="h-8 w-8" />
-              <span className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-[#febd69] text-sm font-bold text-[#131921]">
-                {cartItems.length}
-              </span>
-              <span className="ml-1 text-sm font-bold hidden sm:block">
-                Cart
-              </span>
-            </div>
-          </Link>
-        </div>
-      </div>
-
-      {/* Mobile Search Bar */}
-      <div className="bg-[#131921]">
-        <div className="mx-4 flex-1 items-center md:hidden flex relative">
-          <form onSubmit={handleSearch} className="flex h-10 w-full rounded-md">
-            <input
-              type="text"
-              className="flex-1 border-none px-2 text-black outline-none rounded-l-lg"
-              placeholder="Search products,categories..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-            <button
-              type="submit"
-              className="flex w-[45px] items-center justify-center rounded-r-md bg-[#febd69] hover:bg-orange-500"
-            >
-              <Search className="h-5 w-5 text-[#131921]" />
-            </button>
-          </form>
-        </div>
-      </div>
-
-      {/* Mobile Menu Overlay */}
-      {showMobileMenu && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 z-[10000] lg:hidden">
-          <div className="fixed right-0 top-0 h-full w-80 bg-white shadow-xl transform transition-transform duration-300 z-[10000]">
-            <div className="flex items-center justify-between p-4 border-b bg-[#131921] text-white">
-              <h2 className="text-lg font-semibold">
-                {user ? "Account" : "Sign In"}
-              </h2>
-              <button
-                onClick={() => setShowMobileMenu(false)}
-                className="p-2 hover:bg-gray-700 rounded-full"
-              >
-                <X className="h-5 w-5" />
+            {/* Right Section - Actions */}
+            <div className="flex items-center gap-2 lg:gap-4">
+              {/* Location (Desktop) */}
+              <button className="hidden xl:flex items-center gap-2 px-3 py-2 hover:bg-gray-100 rounded-lg transition-colors group">
+                <MapPin className="w-5 h-5 text-gray-600 group-hover:text-orange-500 transition-colors" />
+                <div className="text-left">
+                  <p className="text-xs text-gray-500">Deliver to</p>
+                  <p className="text-sm font-semibold text-gray-900">Uganda</p>
+                </div>
               </button>
-            </div>
 
-            <div className="p-4 ">
+              {/* Account Section */}
               {user ? (
-                <div className="space-y-4">
-                  <div className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
-                    <Avatar>
-                      <AvatarImage
-                        className="object-cover"
-                        src={profileImage}
-                      />
-                      <AvatarFallback>CN</AvatarFallback>
-                    </Avatar>
-                    <div>
-                      <p className="font-medium text-gray-900">{user.name}</p>
-                      <p className="text-sm text-gray-600">{user.email}</p>
-                    </div>
-                  </div>
-
-                  <div className="space-y-2">
-                    <Link
-                      href="/dashboard"
-                      className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-50 transition-colors"
-                      onClick={() => setShowMobileMenu(false)}
-                    >
-                      <User className="h-5 w-5 text-gray-600" />
-                      <span className="text-gray-900">My Account</span>
-                    </Link>
-
-                    <button
-                      onClick={() => {
-                        setShowMobileMenu(false);
-                        setOpenModal(true);
-                      }}
-                      className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-50 transition-colors w-full text-left"
-                    >
-                      <CornerDownLeft className="h-5 w-5 text-gray-600" />
-                      <span className="text-gray-900">Returns & Orders</span>
-                    </button>
-                  </div>
+                <div className="hidden lg:block">
+                  <UserAvatar user={user} />
                 </div>
               ) : (
-                <div className="space-y-4">
-                  <div className="text-center py-6">
-                    <div className="w-20 h-20 mx-auto mb-4 bg-gray-100 rounded-full flex items-center justify-center">
-                      <User className="h-10 w-10 text-gray-400" />
-                    </div>
-                    <h3 className="text-lg font-medium text-gray-900 mb-2">
-                      Welcome to Kyaja
-                    </h3>
-                    <p className="text-gray-600 text-sm">
-                      Sign in to access your account and enjoy personalized
-                      shopping
-                    </p>
+                <Link
+                  href="/login"
+                  className="hidden lg:flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors group"
+                >
+                  <LogIn className="w-5 h-5 text-gray-700 group-hover:text-orange-500 transition-colors" />
+                  <div className="text-left">
+                    <p className="text-xs text-gray-500">Hello, Sign in</p>
+                    <p className="text-sm font-semibold text-gray-900">Account</p>
                   </div>
+                </Link>
+              )}
 
-                  <div className="space-y-3">
-                    <Link
-                      href="/login"
-                      className="w-full bg-[#febd69] text-[#131921] py-3 px-4 rounded-lg font-medium text-center block hover:bg-orange-500 transition-colors"
-                      onClick={() => setShowMobileMenu(false)}
-                    >
-                      Sign In
-                    </Link>
+              {/* Mobile Account */}
+              <button
+                onClick={() => setShowMobileMenu(true)}
+                className="lg:hidden p-2 hover:bg-gray-100 rounded-lg transition-colors"
+              >
+                {user ? (
+                  <Avatar className="w-8 h-8">
+                    <AvatarImage src={profileImage} className="object-cover" />
+                    <AvatarFallback className="bg-orange-500 text-white">
+                      {user.name?.[0] || "U"}
+                    </AvatarFallback>
+                  </Avatar>
+                ) : (
+                  <User className="w-6 h-6 text-gray-700" />
+                )}
+              </button>
 
-                    <Link
-                      href="/register"
-                      className="w-full border border-gray-300 text-gray-700 py-3 px-4 rounded-lg font-medium text-center block hover:bg-gray-50 transition-colors"
-                      onClick={() => setShowMobileMenu(false)}
-                    >
-                      Create Account
-                    </Link>
-                  </div>
+              {/* Support (Desktop) */}
+              <button
+                onClick={() => setShowSupportModal(true)}
+                className="hidden lg:flex items-center gap-2 px-3 py-2 hover:bg-gray-100 rounded-lg transition-colors group"
+              >
+                <MessageSquare className="w-5 h-5 text-gray-600 group-hover:text-orange-500 transition-colors" />
+                <div className="text-left">
+                  <p className="text-xs text-gray-500">Customer</p>
+                  <p className="text-sm font-semibold text-gray-900">Support</p>
+                </div>
+              </button>
 
-                  <div className="pt-4 border-t">
-                    <button
-                      onClick={() => {
-                        setShowMobileMenu(false);
-                        setOpenModal(true);
-                      }}
-                      className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-50 transition-colors w-full text-left"
-                    >
-                      <MessageSquare className="h-5 w-5 text-gray-600" />
-                      <span className="text-gray-900">Customer Support</span>
-                    </button>
+              {/* Cart */}
+              <Link
+                href="/cart"
+                className="relative p-2 hover:bg-gray-100 rounded-lg transition-colors group"
+              >
+                <ShoppingCart className="w-6 h-6 text-gray-700 group-hover:text-orange-500 transition-colors" />
+                {cartItems.length > 0 && (
+                  <span className="absolute -top-1 -right-1 bg-orange-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center animate-pulse">
+                    {cartItems.length}
+                  </span>
+                )}
+              </Link>
+            </div>
+          </div>
+
+          {/* Mobile Search Bar */}
+          <div className="lg:hidden pb-4">
+            <div className="relative">
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                onKeyPress={handleKeyPress}
+                placeholder="Search products..."
+                className="w-full h-11 pl-10 pr-4 rounded-full border-2 border-gray-200 focus:border-orange-500 focus:outline-none transition-colors bg-gray-50 focus:bg-white text-gray-900"
+              />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+            </div>
+          </div>
+        </div>
+
+        {/* Category Navigation */}
+        <CategoryNav departments={departments} isLoading={isLoading || isLoadingCat} />
+      </header>
+
+      {/* Mobile Sidebar Menu */}
+      {showMobileMenu && (
+        <div className="fixed inset-0 z-[9999]">
+          <div
+            className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+            onClick={() => setShowMobileMenu(false)}
+          />
+          <div className="absolute right-0 top-0 h-full w-full max-w-sm bg-white shadow-2xl animate-slide-in-right">
+            {/* Sidebar Header */}
+            <div className="bg-gradient-to-r from-orange-500 to-pink-500 text-white p-6">
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-xl font-bold">
+                  {user ? "My Account" : "Welcome!"}
+                </h2>
+                <button
+                  onClick={() => setShowMobileMenu(false)}
+                  className="p-2 hover:bg-white/20 rounded-full transition-colors"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              {user && (
+                <div className="flex items-center gap-3 bg-white/10 backdrop-blur-md rounded-lg p-3">
+                  <Avatar className="w-12 h-12 border-2 border-white">
+                    <AvatarImage src={profileImage} className="object-cover" />
+                    <AvatarFallback className="bg-white text-orange-500">
+                      {user.name?.[0] || "U"}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className="flex-1 min-w-0">
+                    <p className="font-semibold truncate">{user.name}</p>
+                    <p className="text-xs text-white/80 truncate">{user.email}</p>
                   </div>
                 </div>
               )}
+            </div>
+
+            {/* Sidebar Content */}
+            <div className="p-6 space-y-6 overflow-y-auto h-[calc(100%-200px)]">
+              {user ? (
+                <>
+                  <div className="space-y-2">
+                    <Link
+                      href="/dashboard"
+                      onClick={() => setShowMobileMenu(false)}
+                      className="flex items-center gap-4 p-4 rounded-xl hover:bg-gray-50 transition-colors group"
+                    >
+                      <div className="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center group-hover:bg-orange-500 transition-colors">
+                        <User className="w-5 h-5 text-orange-500 group-hover:text-white transition-colors" />
+                      </div>
+                      <span className="font-medium text-gray-900">My Dashboard</span>
+                    </Link>
+
+                    <button
+                      onClick={() => {
+                        setShowMobileMenu(false);
+                        setShowSupportModal(true);
+                      }}
+                      className="flex items-center gap-4 p-4 rounded-xl hover:bg-gray-50 transition-colors group w-full"
+                    >
+                      <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center group-hover:bg-blue-500 transition-colors">
+                        <Package className="w-5 h-5 text-blue-500 group-hover:text-white transition-colors" />
+                      </div>
+                      <span className="font-medium text-gray-900">Orders & Returns</span>
+                    </button>
+                  </div>
+                </>
+              ) : (
+                <div className="space-y-4">
+                  <div className="text-center py-8">
+                    <div className="w-20 h-20 bg-gradient-to-br from-orange-100 to-pink-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <User className="w-10 h-10 text-orange-500" />
+                    </div>
+                    <h3 className="text-lg font-bold text-gray-900 mb-2">
+                      Join Kyaja Today
+                    </h3>
+                    <p className="text-gray-600 text-sm">
+                      Sign in to unlock exclusive deals and personalized shopping
+                    </p>
+                  </div>
+
+                  <Link
+                    href="/login"
+                    onClick={() => setShowMobileMenu(false)}
+                    className="block w-full bg-gradient-to-r from-orange-500 to-pink-500 text-white py-4 rounded-xl font-semibold text-center hover:shadow-lg transition-all"
+                  >
+                    Sign In
+                  </Link>
+
+                  <Link
+                    href="/register"
+                    onClick={() => setShowMobileMenu(false)}
+                    className="block w-full border-2 border-gray-300 text-gray-700 py-4 rounded-xl font-semibold text-center hover:bg-gray-50 transition-colors"
+                  >
+                    Create Account
+                  </Link>
+                </div>
+              )}
+
+              {/* Quick Links */}
+              <div className="pt-6 border-t space-y-2">
+                <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3">
+                  Quick Links
+                </h3>
+                <button
+                  onClick={() => {
+                    setShowMobileMenu(false);
+                    setShowSupportModal(true);
+                  }}
+                  className="flex items-center gap-4 p-3 rounded-lg hover:bg-gray-50 transition-colors w-full"
+                >
+                  <MessageSquare className="w-5 h-5 text-gray-600" />
+                  <span className="text-gray-900">Customer Support</span>
+                </button>
+              </div>
+            </div>
+
+            {/* Mobile Categories */}
+            <div className="p-6 border-t">
+              <MobileNavBar allCategories={categories} />
             </div>
           </div>
         </div>
       )}
 
-      {/* Returns & Orders Modal */}
-      <Modal show={openModal} onClose={() => setOpenModal(false)}>
-        <Modal.Header>
-          Need Help with Shopping, Talk to our Help Desk
-        </Modal.Header>
-        <Modal.Body>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-            <Link
-              href="tel:0752815998"
-              className="flex items-center space-x-3 text-green-950 dark:text-slate-100 p-3 rounded-lg hover:bg-gray-50 transition-colors"
-            >
-              <div className="flex items-center w-10 h-10 bg-lime-100 justify-center rounded-full">
-                <MessageSquare className="w-6 h-6 text-lime-800" />
+      {/* Support Modal */}
+      {showSupportModal && (
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4">
+          <div
+            className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+            onClick={() => setShowSupportModal(false)}
+          />
+          <div className="relative bg-white rounded-2xl shadow-2xl max-w-2xl w-full animate-scale-in">
+            {/* Modal Header */}
+            <div className="bg-gradient-to-r from-orange-500 to-pink-500 text-white p-6 rounded-t-2xl">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h2 className="text-2xl font-bold mb-1">We're Here to Help</h2>
+                  <p className="text-white/90 text-sm">
+                    Choose the best way to reach our support team
+                  </p>
+                </div>
+                <button
+                  onClick={() => setShowSupportModal(false)}
+                  className="p-2 hover:bg-white/20 rounded-full transition-colors"
+                >
+                  <X className="w-6 h-6" />
+                </button>
               </div>
-              <span className="font-medium">Call Us Direct</span>
-            </Link>
+            </div>
 
-            <Link
-              href="tel:0752815998"
-              className="flex items-center space-x-3 text-green-950 dark:text-slate-100 p-3 rounded-lg hover:bg-gray-50 transition-colors"
-            >
-              <div className="flex items-center w-10 h-10 bg-lime-100 justify-center rounded-full">
-                <CornerDownLeft className="w-6 h-6 text-lime-800" />
-              </div>
-              <span className="font-medium">Returns and Refunds</span>
-            </Link>
+            {/* Modal Content */}
+            <div className="p-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <Link
+                  href="tel:0752815998"
+                  className="group p-6 rounded-xl border-2 border-gray-200 hover:border-orange-500 hover:bg-orange-50 transition-all"
+                >
+                  <div className="w-12 h-12 bg-orange-100 group-hover:bg-orange-500 rounded-lg flex items-center justify-center mb-4 transition-colors">
+                    <Phone className="w-6 h-6 text-orange-500 group-hover:text-white transition-colors" />
+                  </div>
+                  <h3 className="font-bold text-gray-900 mb-2">Call Us Direct</h3>
+                  <p className="text-sm text-gray-600">
+                    Speak with our team now
+                  </p>
+                  <p className="text-orange-500 font-semibold mt-2">0752815998</p>
+                </Link>
 
-            <Link
-              href="https://wa.me/0752815998"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center space-x-3 text-green-950 dark:text-slate-100 p-3 rounded-lg hover:bg-gray-50 transition-colors sm:col-span-2"
-            >
-              <div className="flex items-center w-10 h-10 bg-lime-100 justify-center rounded-full">
-                <MessageSquare className="w-6 h-6 text-lime-800" />
+                <button
+                  onClick={() => {
+                    setShowSupportModal(false);
+                  }}
+                  className="group p-6 rounded-xl border-2 border-gray-200 hover:border-orange-500 hover:bg-orange-50 transition-all text-left"
+                >
+                  <div className="w-12 h-12 bg-blue-100 group-hover:bg-blue-500 rounded-lg flex items-center justify-center mb-4 transition-colors">
+                    <Package className="w-6 h-6 text-blue-500 group-hover:text-white transition-colors" />
+                  </div>
+                  <h3 className="font-bold text-gray-900 mb-2">Returns & Refunds</h3>
+                  <p className="text-sm text-gray-600">
+                    Manage your orders easily
+                  </p>
+                </button>
+
+                <Link
+                  href="https://wa.me/0752815998"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group p-6 rounded-xl border-2 border-gray-200 hover:border-green-500 hover:bg-green-50 transition-all md:col-span-2"
+                >
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 bg-green-100 group-hover:bg-green-500 rounded-lg flex items-center justify-center transition-colors flex-shrink-0">
+                      <MessageSquare className="w-6 h-6 text-green-500 group-hover:text-white transition-colors" />
+                    </div>
+                    <div>
+                      <h3 className="font-bold text-gray-900 mb-1">Chat on WhatsApp</h3>
+                      <p className="text-sm text-gray-600">
+                        Get instant support via WhatsApp messaging
+                      </p>
+                    </div>
+                  </div>
+                </Link>
               </div>
-              <span className="font-medium">Chat with Us on WhatsApp</span>
-            </Link>
+
+              <div className="mt-6 p-4 bg-gray-50 rounded-xl">
+                <p className="text-sm text-gray-600 text-center">
+                  <span className="font-semibold text-gray-900">Support Hours:</span> Available 24/7 for your convenience
+                </p>
+              </div>
+            </div>
           </div>
-        </Modal.Body>
-      </Modal>
+        </div>
+      )}
 
-      <CategoryNav
-        departments={departments}
-        isLoading={isLoading || isLoadingCat}
-      />
-    </header>
+      <style jsx>{`
+        @keyframes slide-in-right {
+          from {
+            transform: translateX(100%);
+          }
+          to {
+            transform: translateX(0);
+          }
+        }
+
+        @keyframes scale-in {
+          from {
+            opacity: 0;
+            transform: scale(0.95);
+          }
+          to {
+            opacity: 1;
+            transform: scale(1);
+          }
+        }
+
+        .animate-slide-in-right {
+          animation: slide-in-right 0.3s ease-out;
+        }
+
+        .animate-scale-in {
+          animation: scale-in 0.2s ease-out;
+        }
+      `}</style>
+    </>
   );
 }
