@@ -92,7 +92,7 @@ export default function ModernHeader() {
   return (
     <>
       {/* Rotating Promotional Bar */}
-      <div className="bg-gradient-to-r from-orange-500 via-pink-500 to-black text-white py-3 px-4 overflow-hidden relative">
+      <div className="bg-gradient-to-r from-orange-500 to-black text-white py-3 px-4 overflow-hidden relative">
         <div className="max-w-screen-2xl mx-auto relative h-6">
           {PROMO_MESSAGES.map((message, index) => (
             <div
