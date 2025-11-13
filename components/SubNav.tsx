@@ -27,9 +27,9 @@ import { MobileNavBar } from "./MobileNavBar";
 import UserAvatar from "./UserAvatar";
 
 const PROMO_MESSAGES = [
-  "🎁 A Gift Today, A Memory Forever!! || Share a Gift Hamper from Kyaja",
-  "⚡ Expedited Delivery within Greater Kampala || Get your items in 3 hours",
-  "🔥 Black November Deals || Get up to 40% off Genuine Products this Month!!"
+  "🎁 A Gift Today, A Memory Forever!! Share a Gift Hamper from Kyaja",
+  "⚡ Expedited Delivery within Greater Kampala. Get your items in 3 hours",
+  "🔥 Black November Deals!! Up to 60% off Genuine Products this Month!!"
 ];
 
 export default function ModernHeader() {
@@ -60,7 +60,7 @@ export default function ModernHeader() {
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentPromoIndex((prev) => (prev + 1) % PROMO_MESSAGES.length);
-    }, 4000);
+    }, 8000);
     return () => clearInterval(interval);
   }, []);
 
