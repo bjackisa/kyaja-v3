@@ -46,91 +46,94 @@ export default function ProductDetailPage({ slug }: { slug: string }) {
 
   return (
     <>
-      <div className="max-w-[90rem] mx-auto min-h-screen px-1 md:px-6 lg:px-8 roboto relative pt-4 md:pt-8 lg:pt-10">
-       
-        
-        <div className="flex flex-col md:gap-6 gap-2 md:mt-[3%] mt-[20%]">
-           <PrdtBreadCrumb 
-          product={{
-            title: product.title,
-            slug: product.slug,
-            department: {
-              title: product.department.title,
-              slug: product.department.slug
-            },
-            category: product.category ? {
-              title: product.category.title,
-              slug: product.category.slug
-            } : undefined,
-            subCategory: product.subCategory ? {
-              title: product.subCategory.title,
-              slug: product.subCategory.slug
-            } : undefined
-          }} 
-        />
+      <div className="max-w-[90rem] mx-auto min-h-screen px-3 md:px-6 lg:px-8 relative pt-3 md:pt-6 lg:pt-8 pb-24 lg:pb-8">
+        <div className="flex flex-col gap-4 md:gap-6 mt-2 md:mt-4">
+          <PrdtBreadCrumb 
+            product={{
+              title: product.title,
+              slug: product.slug,
+              department: {
+                title: product.department.title,
+                slug: product.department.slug
+              },
+              category: product.category ? {
+                title: product.category.title,
+                slug: product.category.slug
+              } : undefined,
+              subCategory: product.subCategory ? {
+                title: product.subCategory.title,
+                slug: product.subCategory.slug
+              } : undefined
+            }} 
+          />
+
           {/* Main Product Section */}
-          <div className="w-full min-h-[95vh] justify-between flex flex-col xl:flex-row gap-6 ">
+          <div className="w-full flex flex-col xl:flex-row gap-4 md:gap-6">
             {/* Product Details */}
-            <div className="xl:w-3/4 w-full bg-white flex flex-col lg:flex-row p-6 gap-6 shadow-lg rounded-xl border border-gray-100">
+            <div className="xl:w-3/4 w-full bg-white flex flex-col lg:flex-row rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300 border border-gray-100">
               {/* Product Images */}
-              <div className="lg:w-2/5 w-full flex flex-col gap-6">
+              <div className="lg:w-2/5 w-full flex flex-col p-4 md:p-6 bg-gradient-to-br from-gray-50 to-white">
                 <ProductSlider data={product.productImages} />
-                <div className="w-full h-px bg-gradient-to-r from-transparent via-gray-300 to-transparent"></div>
-                <div className="flex flex-col gap-4">
-                  <h3 className="text-sm font-semibold text-gray-700 uppercase tracking-wide">Share Product</h3>
-                  <div className="flex gap-3 items-center">
-                    <ShareBlog
-                      productUrl={`${process.env.NEXT_PUBLIC_BASE_URL}/product/${slug}`}
-                    />
-                  </div>
+                
+                <div className="mt-6 pt-6 border-t border-gray-200">
+                  <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">
+                    Share This Product
+                  </h3>
+                  <ShareBlog
+                    productUrl={`${process.env.NEXT_PUBLIC_BASE_URL}/product/${slug}`}
+                  />
                 </div>
               </div>
 
               {/* Product Info */}
-              <div className="lg:w-3/5 w-full flex flex-col gap-6">
-                <div className="flex justify-between items-start">
+              <div className="lg:w-3/5 w-full flex flex-col p-4 md:p-6 lg:p-8">
+                {/* Header */}
+                <div className="flex justify-between items-start gap-4 mb-4">
                   <div className="flex-1">
-                    <p className="text-sm text-blue-600 font-bold mb-2">{product.category?.title}</p>
-                    <h1 className="text-lg lg:text-xl font-bold text-gray-900 leading-tight line-clamp-2">
+                    <div className="inline-flex items-center gap-2 bg-blue-50 text-blue-700 px-3 py-1 rounded-full text-xs font-semibold mb-3">
+                      <span className="w-1.5 h-1.5 bg-blue-500 rounded-full"></span>
+                      {product.category?.title}
+                    </div>
+                    <h1 className="text-xl md:text-2xl lg:text-3xl font-bold text-gray-900 leading-tight">
                       {product.title}
                     </h1>
                   </div>
-                  <button className="p-2 hover:bg-gray-100 rounded-full transition-colors">
-                    <AiOutlineHeart className="text-2xl text-orange-500 hover:text-orange-600" />
+                  <button className="p-3 hover:bg-orange-50 rounded-full transition-all duration-300 group">
+                    <AiOutlineHeart className="text-2xl text-orange-500 group-hover:scale-110 transition-transform" />
                   </button>
                 </div>
 
-                <div className="w-full h-px bg-gradient-to-r from-transparent via-gray-300 to-transparent"></div>
-
                 {/* Pricing Section */}
-                <div className="bg-gradient-to-r from-orange-50 to-yellow-50 p-4 rounded-lg border border-orange-200">
-                  <div className="flex gap-3 items-center flex-wrap">
-                    <h2 className="text-lg text-gray-900 font-bold">
+                <div className="bg-gradient-to-r from-orange-50 via-yellow-50 to-orange-50 p-5 rounded-2xl border border-orange-200 mb-6">
+                  <div className="flex gap-3 items-baseline flex-wrap">
+                    <h2 className="text-2xl md:text-3xl text-gray-900 font-black">
                       UGX {formatMoney(product.salePrice < 1 ? product.productPrice : product.salePrice)}
                     </h2>
                     {product.salePrice > 0 && (
-                      <h3 className="line-through text-gray-500 text-sm">
+                      <h3 className="line-through text-gray-400 text-base md:text-lg font-medium">
                         UGX {formatMoney(product.productPrice)}
                       </h3>
                     )}
-                    {product.isDiscount && discount > 0 && (
-                      <span className="bg-orange-500 text-white px-3 py-1 rounded-full text-xs font-semibold">
-                        -{discount.toFixed(0)}% OFF
-                      </span>
-                    )}
                   </div>
+                  {product.isDiscount && discount > 0 && (
+                    <div className="mt-3 inline-flex items-center gap-2 bg-orange-500 text-white px-4 py-1.5 rounded-full text-sm font-bold">
+                      <MdStars className="text-lg" />
+                      Save {discount.toFixed(0)}% Today!
+                    </div>
+                  )}
                 </div>
 
                 {/* Stock and Rating */}
-                <div className="flex flex-col gap-4">
-                  <div className="flex flex-col gap-2">
-                    <p className="text-lg text-green-600 font-semibold">
-                      ✓ {product.productStock} Items In Stock
+                <div className="space-y-4 mb-6">
+                  <div className="flex items-center gap-2 text-green-600">
+                    <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                    <p className="text-base font-semibold">
+                      {product.productStock} Items In Stock
                     </p>
-                    <p className="text-sm text-gray-600">
-                      🚚Note All delivery Fees are after Delivery
-                    </p>
-                    <div className="flex gap-3 items-center">
+                  </div>
+
+                  <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-6">
+                    <div className="flex items-center gap-2">
                       <div className="flex">
                         {[...Array(5)].map((_, i) =>
                           i < (reviewsData?.averageRating || 0) ? (
@@ -146,73 +149,106 @@ export default function ProductDetailPage({ slug }: { slug: string }) {
                           )
                         )}
                       </div>
-                      <p className="text-sm text-purple-600 font-medium">
-                        ({reviewsData?.reviews?.length || 0} verified ratings)
-                      </p>
+                      <span className="text-sm font-semibold text-gray-900">
+                        {reviewsData?.averageRating?.toFixed(1) || '0.0'}
+                      </span>
                     </div>
-                    <p className="text-sm text-gray-600">
-                      {product.salesCount || 0} times bought
+                    <div className="flex items-center gap-4 text-sm text-gray-600">
+                      <span className="flex items-center gap-1">
+                        <span className="font-semibold text-purple-600">
+                          {reviewsData?.reviews?.length || 0}
+                        </span>
+                        reviews
+                      </span>
+                      <span className="w-1 h-1 bg-gray-300 rounded-full"></span>
+                      <span className="flex items-center gap-1">
+                        <span className="font-semibold text-gray-900">
+                          {product.salesCount || 0}
+                        </span>
+                        sold
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-2 text-sm text-gray-600 bg-blue-50 p-3 rounded-lg border border-blue-100">
+                    <MdLocalShipping className="text-blue-600 text-lg flex-shrink-0 mt-0.5" />
+                    <p>
+                      <span className="font-semibold text-gray-900">Free delivery</span> on orders over UGX 100,000. Delivery fees apply otherwise.
                     </p>
                   </div>
-
-                  {/* Action Buttons */}
-                  <div className="hidden lg:flex gap-3">
-                    <AddToCart product={product} />
-                    <LargeBookNowBtn product={product} session={session} />
-                  </div>
-
-                  <div className="w-full h-px bg-gradient-to-r from-transparent via-gray-300 to-transparent"></div>
                 </div>
 
-                {/* Promotions */}
-                <SpecialOffers />
+                {/* Action Buttons - Desktop */}
+                <div className="hidden lg:flex gap-3 mb-6">
+                  <div className="flex-1">
+                    <LargeBookNowBtn product={product} session={session} />
+                  </div>
+                  <div className="w-14">
+                    <AddToCart product={product} />
+                  </div>
+                </div>
+
+                <div className="border-t border-gray-200 pt-6">
+                  <SpecialOffers />
+                </div>
               </div>
             </div>
 
             {/* Delivery & Returns Sidebar */}
-            <div className="xl:w-1/4 w-full bg-white shadow-lg rounded-xl p-6 border border-gray-100 h-fit">
-              <div className="flex flex-col gap-6">
-                <div>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-4">
+            <div className="xl:w-1/4 w-full">
+              <div className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300 border border-gray-100 sticky top-24">
+                <div className="bg-gradient-to-r from-green-50 to-blue-50 p-5 border-b border-gray-200">
+                  <h3 className="text-lg font-bold text-gray-900">
                     Delivery & Returns
                   </h3>
-                  <div className="w-full h-px bg-gradient-to-r from-transparent via-gray-300 to-transparent"></div>
                 </div>
 
-                <div className="flex flex-col gap-4">
-                  <div className="flex gap-3 p-3 bg-green-50 rounded-lg border border-green-200">
-                    <MdLocalShipping className="text-green-600 text-xl flex-shrink-0 mt-1" />
-                    <div>
-                      <h4 className="text-sm font-semibold text-gray-900 mb-1">
-                        Door Delivery
-                      </h4>
-                      <p className="text-xs text-gray-600">
-                        Delivery within 24-48 hours in Kampala. Pay delivery fees on arrival.
-                      </p>
+                <div className="p-5 space-y-4">
+                  <div className="group hover:bg-green-50 p-4 rounded-xl border-2 border-transparent hover:border-green-200 transition-all duration-300">
+                    <div className="flex gap-3">
+                      <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
+                        <MdLocalShipping className="text-green-600 text-xl" />
+                      </div>
+                      <div>
+                        <h4 className="text-sm font-bold text-gray-900 mb-1">
+                          Fast Delivery
+                        </h4>
+                        <p className="text-xs text-gray-600 leading-relaxed">
+                          Delivery within 24-48 hours in Kampala. Pay delivery fees on arrival.
+                        </p>
+                      </div>
                     </div>
                   </div>
 
-                  <div className="flex gap-3 p-3 bg-blue-50 rounded-lg border border-blue-200">
-                    <MdSecurity className="text-blue-600 text-xl flex-shrink-0 mt-1" />
-                    <div>
-                      <h4 className="text-sm font-semibold text-gray-900 mb-1">
-                        Pay on Delivery
-                      </h4>
-                      <p className="text-xs text-gray-600">
-                        Pay when you receive your order. Cash or Mobile Money accepted.
-                      </p>
+                  <div className="group hover:bg-blue-50 p-4 rounded-xl border-2 border-transparent hover:border-blue-200 transition-all duration-300">
+                    <div className="flex gap-3">
+                      <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
+                        <MdSecurity className="text-blue-600 text-xl" />
+                      </div>
+                      <div>
+                        <h4 className="text-sm font-bold text-gray-900 mb-1">
+                          Secure Payment
+                        </h4>
+                        <p className="text-xs text-gray-600 leading-relaxed">
+                          Pay when you receive your order. Cash or Mobile Money accepted.
+                        </p>
+                      </div>
                     </div>
                   </div>
 
-                  <div className="flex gap-3 p-3 bg-orange-50 rounded-lg border border-orange-200">
-                    <BiSupport className="text-orange-600 text-xl flex-shrink-0 mt-1" />
-                    <div>
-                      <h4 className="text-sm font-semibold text-gray-900 mb-1">
-                        Customer Support
-                      </h4>
-                      <p className="text-xs text-gray-600">
-                        24/7 customer support for all your queries and concerns.
-                      </p>
+                  <div className="group hover:bg-orange-50 p-4 rounded-xl border-2 border-transparent hover:border-orange-200 transition-all duration-300">
+                    <div className="flex gap-3">
+                      <div className="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
+                        <BiSupport className="text-orange-600 text-xl" />
+                      </div>
+                      <div>
+                        <h4 className="text-sm font-bold text-gray-900 mb-1">
+                          24/7 Support
+                        </h4>
+                        <p className="text-xs text-gray-600 leading-relaxed">
+                          Round-the-clock customer support for all your queries and concerns.
+                        </p>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -221,85 +257,131 @@ export default function ProductDetailPage({ slug }: { slug: string }) {
           </div>
 
           {/* Product Details */}
-          <div className="w-full bg-white p-6 shadow-lg rounded-xl border border-gray-100">
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">
-              Product Details
-            </h2>
-            <div className="prose max-w-none">
-              <p className="text-gray-700 leading-relaxed">{product.description}</p>
+          <div className="w-full bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300 border border-gray-100">
+            <div className="bg-gradient-to-r from-gray-50 to-white p-5 md:p-6 border-b border-gray-200">
+              <h2 className="text-xl md:text-2xl font-bold text-gray-900">
+                Product Details
+              </h2>
+            </div>
+            <div className="p-5 md:p-6">
+              <div className="prose max-w-none">
+                <p className="text-gray-700 leading-relaxed text-sm md:text-base">
+                  {product.description}
+                </p>
+              </div>
             </div>
           </div>
 
           {/* Reviews Section */}
-          <div className="w-full bg-white p-6 shadow-lg rounded-xl border border-gray-100">
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">
-              Customer Reviews
-            </h2>
-            {reviewsData?.reviews?.length > 0 ? (
-              <div className="flex flex-col gap-4">
-                {reviewsData.reviews.map((review) => (
-                  <div key={review.id} className="border-b pb-4">
-                    <div className="flex items-center gap-2">
-                      <div className="flex">
-                        {[...Array(5)].map((_, i) =>
-                          i < review.rating ? (
-                            <AiTwotoneStar
-                              key={i}
-                              className="text-lg text-orange-500"
-                            />
-                          ) : (
-                            <AiOutlineStar
-                              key={i}
-                              className="text-lg text-gray-300"
-                            />
-                          )
-                        )}
-                      </div>
-                      <p className="font-semibold">{review.user.name}</p>
-                    </div>
-                    <p className="text-gray-600 mt-2">{review.comment}</p>
+          <div className="w-full bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300 border border-gray-100">
+            <div className="bg-gradient-to-r from-orange-50 to-yellow-50 p-5 md:p-6 border-b border-gray-200">
+              <div className="flex items-center justify-between">
+                <h2 className="text-xl md:text-2xl font-bold text-gray-900">
+                  Customer Reviews
+                </h2>
+                {reviewsData?.reviews?.length > 0 && (
+                  <div className="flex items-center gap-2 bg-white px-4 py-2 rounded-full shadow-sm">
+                    <AiTwotoneStar className="text-orange-500 text-lg" />
+                    <span className="font-bold text-gray-900">
+                      {reviewsData.averageRating?.toFixed(1)}
+                    </span>
+                    <span className="text-xs text-gray-500">
+                      ({reviewsData.reviews.length})
+                    </span>
                   </div>
-                ))}
+                )}
               </div>
-            ) : (
-              <p className="text-gray-500">No reviews yet.</p>
-            )}
+            </div>
+            <div className="p-5 md:p-6">
+              {reviewsData?.reviews?.length > 0 ? (
+                <div className="space-y-4">
+                  {reviewsData.reviews.map((review) => (
+                    <div 
+                      key={review.id} 
+                      className="p-4 bg-gray-50 rounded-xl border border-gray-200 hover:border-orange-200 transition-colors"
+                    >
+                      <div className="flex items-center justify-between mb-3">
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 bg-gradient-to-br from-orange-400 to-pink-400 rounded-full flex items-center justify-center text-white font-bold text-sm">
+                            {review.user.name?.[0]?.toUpperCase()}
+                          </div>
+                          <div>
+                            <p className="font-semibold text-gray-900">{review.user.name}</p>
+                            <div className="flex items-center gap-1 mt-0.5">
+                              {[...Array(5)].map((_, i) =>
+                                i < review.rating ? (
+                                  <AiTwotoneStar
+                                    key={i}
+                                    className="text-sm text-orange-500"
+                                  />
+                                ) : (
+                                  <AiOutlineStar
+                                    key={i}
+                                    className="text-sm text-gray-300"
+                                  />
+                                )
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <p className="text-gray-700 text-sm leading-relaxed">{review.comment}</p>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-12">
+                  <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <AiOutlineStar className="text-3xl text-gray-400" />
+                  </div>
+                  <p className="text-gray-500 font-medium">No reviews yet</p>
+                  <p className="text-gray-400 text-sm mt-1">Be the first to review this product</p>
+                </div>
+              )}
+            </div>
           </div>
+
           <ReviewForm id={product.id} />
 
           {/* Similar Products */}
-          <div className="w-full bg-white p-6 shadow-lg rounded-xl border border-gray-100">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">
-              You May Also Like
-            </h2>
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-              {similarProducts.map((product) => (
-                <Product key={product.id} product={product} showAddToCart={true}/>
-              ))}
+          <div className="w-full bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300 border border-gray-100">
+            <div className="bg-gradient-to-r from-purple-50 to-pink-50 p-5 md:p-6 border-b border-gray-200">
+              <h2 className="text-xl md:text-2xl font-bold text-gray-900">
+                You May Also Like
+              </h2>
+            </div>
+            <div className="p-5 md:p-6">
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 md:gap-4">
+                {similarProducts.map((product) => (
+                  <Product key={product.id} product={product} showAddToCart={true}/>
+                ))}
+              </div>
             </div>
           </div>
         </div>
       </div>
 
       {/* Mobile Bottom Actions */}
-      <div className="lg:hidden fixed bottom-[6%] left-0 right-0 bg-white border-t border-gray-200 p-4 shadow-lg z-50">
-        <div className="flex gap-3 items-center max-w-7xl mx-auto">
-          <div className="w-12">
-            <AddToCart product={product} />
+      <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-2xl z-50">
+        <div className="p-3">
+          <div className="flex gap-2 items-center max-w-7xl mx-auto">
+            <div className="w-12">
+              <AddToCart product={product} />
+            </div>
+            <div className="flex-1">
+              <LargeBookNowBtn
+                product={product}
+                backgroundColor="#f68b1e"
+                session={session}
+              />
+            </div>
+            <Link
+              href="tel:0752815998"
+              className="w-12 h-12 flex items-center justify-center text-white bg-orange-500 hover:bg-orange-600 rounded-xl transition-colors shadow-lg"
+            >
+              <IoCall size={20} />
+            </Link>
           </div>
-          <div className="flex-1">
-            <LargeBookNowBtn
-              product={product}
-              backgroundColor="#f68b1e"
-              session={session}
-            />
-          </div>
-          <Link
-            href="tel:0752815998"
-            className="w-12 h-12 flex items-center justify-center text-orange-500 border-2 border-orange-500 rounded-lg hover:bg-orange-50 transition-colors"
-          >
-            <IoCall size={20} />
-          </Link>
         </div>
       </div>
     </>
