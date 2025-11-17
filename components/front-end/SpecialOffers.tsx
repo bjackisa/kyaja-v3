@@ -17,138 +17,138 @@ const SpecialOffers = () => {
       const offers = [
         // JANUARY
         {
-          title: "New Year Deals",
+          title: "New Year Kickstart Sale",
           startDate: new Date(year, 0, 1),
           endDate: new Date(new Date(year, 0, 7).setHours(23, 59, 59, 999)),
         },
         {
-          title: "Back-to-School (Term 1)",
+          title: "Back-to-Class Rush",
           startDate: new Date(year, 0, 8),
           endDate: new Date(new Date(year, 1, 9).setHours(23, 59, 59, 999)),
         },
         // FEBRUARY
         {
-          title: "Valentine’s Specials",
+          title: "Hearts Week Specials",
           startDate: new Date(year, 1, 10),
           endDate: new Date(new Date(year, 1, 15).setHours(23, 59, 59, 999)),
         },
         {
-          title: "Love & Self-Care Season",
+          title: "Love Yourself Season",
           startDate: new Date(year, 1, 16),
           endDate: new Date(new Date(year, 1, 28).setHours(23, 59, 59, 999)),
         },
         // MARCH
         {
-          title: "Early-Year Restock",
+          title: "Fresh Start Restock",
           startDate: new Date(year, 2, 1),
           endDate: new Date(new Date(year, 2, 14).setHours(23, 59, 59, 999)),
         },
         {
-          title: "Women’s Month Celebrations",
+          title: "Power of Her Festival",
           startDate: new Date(year, 2, 15),
           endDate: new Date(new Date(year, 2, 31).setHours(23, 59, 59, 999)),
         },
         // APRIL
         {
-          title: "Easter Season Specials",
+          title: "Easter Joy Month",
           startDate: new Date(year, 3, 1),
           endDate: new Date(new Date(year, 3, 30).setHours(23, 59, 59, 999)),
         },
         // MAY
         {
-          title: "Labour Day Specials",
+          title: "Workers’ Day Reward Drop",
           startDate: new Date(year, 4, 1),
           endDate: new Date(new Date(year, 4, 1).setHours(23, 59, 59, 999)),
         },
         {
-          title: "Pre–Mother’s Day Period",
+          title: "Mum’s Countdown Days",
           startDate: new Date(year, 4, 2),
           endDate: new Date(new Date(year, 4, 11).setHours(23, 59, 59, 999)),
         },
         {
-          title: "Mother’s Day Specials",
+          title: "Mother’s Day Honor Sale",
           startDate: new Date(year, 4, 12),
           endDate: new Date(new Date(year, 4, 12).setHours(23, 59, 59, 999)),
         },
         {
-          title: "Post–Mother’s Day Appreciation Period",
+          title: "May Appreciation Weeks",
           startDate: new Date(year, 4, 13),
           endDate: new Date(new Date(year, 4, 31).setHours(23, 59, 59, 999)),
         },
         // JUNE
         {
-          title: "Mid-Year Refresh Season",
+          title: "Mid-Year Boost Days",
           startDate: new Date(year, 5, 1),
           endDate: new Date(new Date(year, 5, 16).setHours(23, 59, 59, 999)),
         },
         {
-          title: "Father’s Day & Men’s Month Highlights",
+          title: "Dad & Men’s Month Special",
           startDate: new Date(year, 5, 17),
           endDate: new Date(new Date(year, 5, 30).setHours(23, 59, 59, 999)),
         },
         // JULY
         {
-          title: "Back-to-School (Term 2)",
+          title: "Term 2 School Sprint",
           startDate: new Date(year, 6, 1),
           endDate: new Date(new Date(year, 6, 15).setHours(23, 59, 59, 999)),
         },
         {
-          title: "Mid-Year Clearance",
+          title: "July Clearance Storm",
           startDate: new Date(year, 6, 16),
           endDate: new Date(new Date(year, 6, 31).setHours(23, 59, 59, 999)),
         },
         // AUGUST
         {
-          title: "Home & Living Season",
+          title: "Home Upgrade Fortnight",
           startDate: new Date(year, 7, 1),
           endDate: new Date(new Date(year, 7, 14).setHours(23, 59, 59, 999)),
         },
         {
-          title: "Agriculture & Outdoors Season",
+          title: "Grow & Explore Season",
           startDate: new Date(year, 7, 15),
           endDate: new Date(new Date(year, 7, 31).setHours(23, 59, 59, 999)),
         },
         // SEPTEMBER
         {
-          title: "Tech & Innovation Season",
+          title: "Tech Evolution Weeks",
           startDate: new Date(year, 8, 1),
           endDate: new Date(new Date(year, 8, 14).setHours(23, 59, 59, 999)),
         },
         {
-          title: "Fashion & Lifestyle Reset",
+          title: "September Style Reset",
           startDate: new Date(year, 8, 15),
           endDate: new Date(new Date(year, 8, 30).setHours(23, 59, 59, 999)),
         },
         // OCTOBER
         {
-          title: "Independence Season",
+          title: "Independence Pride Sale",
           startDate: new Date(year, 9, 1),
           endDate: new Date(new Date(year, 9, 15).setHours(23, 59, 59, 999)),
         },
         {
-          title: "Pre–Black November Warm-Up",
+          title: "Pre-November Warm-Up",
           startDate: new Date(year, 9, 16),
           endDate: new Date(new Date(year, 9, 31).setHours(23, 59, 59, 999)),
         },
         // NOVEMBER
         {
-          title: "Black November",
+          title: "Black November Mania",
           startDate: new Date(year, 10, 1),
           endDate: new Date(new Date(year, 10, 30).setHours(23, 59, 59, 999)),
         },
         // DECEMBER
         {
-          title: "Christmas Warm-Up",
+          title: "Early Christmas Spark",
           startDate: new Date(year, 11, 1),
           endDate: new Date(new Date(year, 11, 10).setHours(23, 59, 59, 999)),
         },
         {
-          title: "Christmas Festive Season",
+          title: "Festive Countdown Carnival",
           startDate: new Date(year, 11, 11),
           endDate: new Date(new Date(year, 11, 24).setHours(23, 59, 59, 999)),
         },
         {
-          title: "End-of-Year Clearance",
+          title: "Year-End Wipeout Sale",
           startDate: new Date(year, 11, 25),
           endDate: new Date(new Date(year, 11, 31).setHours(23, 59, 59, 999)),
         },
