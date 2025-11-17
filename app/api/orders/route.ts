@@ -64,6 +64,9 @@ export async function POST(request: NextRequest) {
             productStock: {
               decrement: parseInt(item.qty),
             },
+            salesCount: {
+              increment: 1,
+            },
           },
         });
       }
