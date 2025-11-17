@@ -17,6 +17,7 @@ import { useReviewsQuery } from "@/hooks/use-reviews";
 import ProductSkeleton from "./product-detailed-skeleton";
 import PrdtBreadCrumb from "./PrdtBreadCrumb";
 import ReviewForm from "./ReviewForm";
+import SpecialOffers from "./SpecialOffers";
 
 export default function ProductDetailPage({ slug }: { slug: string }) {
   const { data: session } = useSession();
@@ -164,21 +165,7 @@ export default function ProductDetailPage({ slug }: { slug: string }) {
                 </div>
 
                 {/* Promotions */}
-                <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
-                  <h3 className="text-gray-900 font-semibold mb-3 uppercase tracking-wide">
-                    Special Offers
-                  </h3>
-                  <div className="flex flex-col gap-3 text-sm text-gray-700">
-                    <p className="flex gap-2 items-center">
-                      <MdStars className="text-orange-500 text-lg flex-shrink-0" />
-                      Get up to 40% off during festive seasons with Kyaja Store UG
-                    </p>
-                    <p className="flex gap-2 items-center">
-                      <MdStars className="text-orange-500 text-lg flex-shrink-0" />
-                      Special discount on your first purchase
-                    </p>
-                  </div>
-                </div>
+                <SpecialOffers />
               </div>
             </div>
 
