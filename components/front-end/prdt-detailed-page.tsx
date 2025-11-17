@@ -13,8 +13,10 @@ import LargeBookNowBtn from "@/components/front-end/LargeBookNowBtn";
 import ShareBlog from "@/components/front-end/ShareBlog";
 import { useSession } from "next-auth/react";
 import { useProductQuery, useSimilarProductsQuery } from "@/hooks/use-products";
+import { useReviewsQuery } from "@/hooks/use-reviews";
 import ProductSkeleton from "./product-detailed-skeleton";
 import PrdtBreadCrumb from "./PrdtBreadCrumb";
+import ReviewForm from "./ReviewForm";
 
 export default function ProductDetailPage({ slug }: { slug: string }) {
   const { data: session } = useSession();
@@ -32,6 +34,8 @@ export default function ProductDetailPage({ slug }: { slug: string }) {
     product?.categoryId ?? '',
     product?.id ?? '',
   );
+
+  const { data: reviewsData } = useReviewsQuery(product?.id ?? "");
 
   if (isLoading) return <ProductSkeleton />;
   if (error) return <div className="text-center text-red-500 p-8">Error: {(error as Error).message}</div>;
@@ -127,16 +131,27 @@ export default function ProductDetailPage({ slug }: { slug: string }) {
                     </p>
                     <div className="flex gap-3 items-center">
                       <div className="flex">
-                        <AiTwotoneStar className="text-xl text-orange-500" />
-                        <AiTwotoneStar className="text-xl text-orange-500" />
-                        <AiTwotoneStar className="text-xl text-orange-500" />
-                        <AiOutlineStar className="text-xl text-gray-300" />
-                        <AiOutlineStar className="text-xl text-gray-300" />
+                        {[...Array(5)].map((_, i) =>
+                          i < (reviewsData?.averageRating || 0) ? (
+                            <AiTwotoneStar
+                              key={i}
+                              className="text-xl text-orange-500"
+                            />
+                          ) : (
+                            <AiOutlineStar
+                              key={i}
+                              className="text-xl text-gray-300"
+                            />
+                          )
+                        )}
                       </div>
                       <p className="text-sm text-purple-600 font-medium">
-                        (4 verified ratings)
+                        ({reviewsData?.reviews?.length || 0} verified ratings)
                       </p>
                     </div>
+                    <p className="text-sm text-gray-600">
+                      {product.salesCount || 0} times bought
+                    </p>
                   </div>
 
                   {/* Action Buttons */}
@@ -227,6 +242,43 @@ export default function ProductDetailPage({ slug }: { slug: string }) {
               <p className="text-gray-700 leading-relaxed">{product.description}</p>
             </div>
           </div>
+
+          {/* Reviews Section */}
+          <div className="w-full bg-white p-6 shadow-lg rounded-xl border border-gray-100">
+            <h2 className="text-2xl font-bold text-gray-900 mb-4">
+              Customer Reviews
+            </h2>
+            {reviewsData?.reviews?.length > 0 ? (
+              <div className="flex flex-col gap-4">
+                {reviewsData.reviews.map((review) => (
+                  <div key={review.id} className="border-b pb-4">
+                    <div className="flex items-center gap-2">
+                      <div className="flex">
+                        {[...Array(5)].map((_, i) =>
+                          i < review.rating ? (
+                            <AiTwotoneStar
+                              key={i}
+                              className="text-lg text-orange-500"
+                            />
+                          ) : (
+                            <AiOutlineStar
+                              key={i}
+                              className="text-lg text-gray-300"
+                            />
+                          )
+                        )}
+                      </div>
+                      <p className="font-semibold">{review.user.name}</p>
+                    </div>
+                    <p className="text-gray-600 mt-2">{review.comment}</p>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="text-gray-500">No reviews yet.</p>
+            )}
+          </div>
+          <ReviewForm id={product.id} />
 
           {/* Similar Products */}
           <div className="w-full bg-white p-6 shadow-lg rounded-xl border border-gray-100">

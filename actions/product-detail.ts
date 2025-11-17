@@ -99,6 +99,8 @@ export const getProductDetail = cache(async (slug: string) => {
         productStock: true,
         isDiscount: true,
         discount: true,
+        salesCount: true,
+        averageRating: true,
         department: {
           select: {
             id: true,

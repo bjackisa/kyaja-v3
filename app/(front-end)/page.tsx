@@ -20,6 +20,11 @@ export default function Home() {
     isLoading: isLoadingDepartmentsAndCat 
   } = useDepartmentCategories();
 
+  console.log("Banners:", banners);
+  console.log("Top Deals:", topDeals);
+  console.log("Sections:", sections);
+  console.log("Departments:", departments);
+
   try {
     return (
       <div className="min-h-[100vh] pb-5 [family-name:var(--font-geist-sans)] flex flex-col gap-3 px-2 lg:max-w-[86rem] mx-auto">
