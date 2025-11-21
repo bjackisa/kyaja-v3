@@ -6,7 +6,7 @@ import "swiper/css";
 import "swiper/css/free-mode";
 import "swiper/css/navigation";
 import "swiper/css/thumbs";
-import { FreeMode, Navigation, Thumbs } from "swiper/modules";
+import { Autoplay, FreeMode, Navigation, Thumbs } from "swiper/modules";
 import Image from "next/image";
 import { DEFAULT_BLUR, DEFAULT_IMAGE } from "@/lib/lazyLoading";
 type ProductSliderProps = {
@@ -21,7 +21,7 @@ export default function ProductSlider({ data }: ProductSliderProps) {
   }
 
   return (
-    <div className="prdt-image">
+    <div className="prdt-image space-y-3">
       <Swiper
         style={
           {
@@ -33,47 +33,61 @@ export default function ProductSlider({ data }: ProductSliderProps) {
         spaceBetween={10}
         navigation={true}
         thumbs={{ swiper: thumbsSwiper.current }}
-        modules={[FreeMode, Navigation, Thumbs]}
-        className="mySwiper2"
+        autoplay={{
+          delay: 3000,
+          disableOnInteraction: false,
+        }}
+        modules={[FreeMode, Navigation, Thumbs, Autoplay]}
+        className="mySwiper2 h-full rounded-xl overflow-hidden"
       >
         {data.map((image: any, i) => {
           return (
             <SwiperSlide key={i}>
-              <Image
-                src={image ?? DEFAULT_IMAGE}
-                alt={`Product Image`}
-                className="object-cover"
-                objectFit="cover"
-                width={300}
-                height={300}
-                placeholder="blur"
-                blurDataURL={DEFAULT_BLUR}
-              />
+              <div className="relative aspect-square w-full">
+                <Image
+                  src={image ?? DEFAULT_IMAGE}
+                  alt={`Product Image`}
+                  className="object-contain"
+                  fill
+                  sizes="(max-width: 768px) 90vw, 420px"
+                  placeholder="blur"
+                  blurDataURL={DEFAULT_BLUR}
+                />
+              </div>
             </SwiperSlide>
           );
         })}
       </Swiper>
       <Swiper
         onSwiper={(swiper) => (thumbsSwiper.current = swiper) as any}
-        loop={true}
+        loop={false}
         spaceBetween={10}
         slidesPerView={4}
         freeMode={true}
         watchSlidesProgress={true}
         modules={[FreeMode, Navigation, Thumbs]}
+        breakpoints={{
+          0: {
+            slidesPerView: 3,
+          },
+          640: {
+            slidesPerView: 4,
+          },
+        }}
         className="mySwiper"
       >
         {data.map((image: any, i) => {
           return (
             <SwiperSlide key={i}>
-              <Image
-                src={image}
-                alt={`Thumbnail Image`}
-                className="object-cover"
-                objectFit="cover"
-                width={300}
-                height={300}
-              />
+              <div className="relative aspect-square w-full">
+                <Image
+                  src={image}
+                  alt={`Thumbnail Image`}
+                  className="object-cover rounded-lg"
+                  fill
+                  sizes="100px"
+                />
+              </div>
             </SwiperSlide>
           );
         })}
