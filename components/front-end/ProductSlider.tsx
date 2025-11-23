@@ -6,7 +6,7 @@ import "swiper/css";
 import "swiper/css/free-mode";
 import "swiper/css/navigation";
 import "swiper/css/thumbs";
-import { Autoplay, FreeMode, Navigation, Thumbs } from "swiper/modules";
+import { FreeMode, Navigation, Thumbs } from "swiper/modules";
 import Image from "next/image";
 import { DEFAULT_BLUR, DEFAULT_IMAGE } from "@/lib/lazyLoading";
 type ProductSliderProps = {
@@ -33,11 +33,7 @@ export default function ProductSlider({ data }: ProductSliderProps) {
         spaceBetween={10}
         navigation={true}
         thumbs={{ swiper: thumbsSwiper.current }}
-        autoplay={{
-          delay: 3000,
-          disableOnInteraction: false,
-        }}
-        modules={[FreeMode, Navigation, Thumbs, Autoplay]}
+        modules={[FreeMode, Navigation, Thumbs]}
         className="mySwiper2 h-full rounded-xl overflow-hidden"
       >
         {data.map((image: any, i) => {
