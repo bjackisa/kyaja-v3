@@ -1,4 +1,5 @@
 "use server";
+import { FALLBACK_IMAGE_URL } from "@/lib/constants";
 import db from "@/lib/db";
 
 export interface IProduct {
@@ -126,7 +127,7 @@ export const getAllProducts = async (): Promise<IProductsResponse> => {
         id: product.id,
         title: product.title,
         slug: product.slug,
-        imageUrl: product.imageUrl || null,
+        imageUrl: product.imageUrl || FALLBACK_IMAGE_URL,
         productPrice: product.productPrice,
         salePrice: product.salePrice,
         wholesalePrice: product.wholesalePrice || null,
@@ -163,7 +164,7 @@ export const getProductById = async (
     return {
       data: {
         ...product,
-        imageUrl: product.imageUrl || null,
+        imageUrl: product.imageUrl || FALLBACK_IMAGE_URL,
         wholesalePrice: product.wholesalePrice || null,
         wholesaleQty: product.wholesaleQty || null,
         productStock: product.productStock || null,
@@ -188,7 +189,7 @@ export const deleteProduct = async (id: string): Promise<IProductResponse> => {
     return {
       data: {
         ...product,
-        imageUrl: product.imageUrl || null,
+        imageUrl: product.imageUrl || FALLBACK_IMAGE_URL,
         wholesalePrice: product.wholesalePrice || null,
         wholesaleQty: product.wholesaleQty || null,
         productStock: product.productStock || null,
@@ -216,12 +217,8 @@ export const createProduct = async (
       data: {
         title: product.title,
         slug: product.slug,
-        imageUrl:
-          product.imageUrl ||
-          "https://utfs.io/f/aa568418-002c-40a1-b13f-a0fd7eef1353-9w6i5v.svg",
-        productImages: product.productImages || [
-          "https://utfs.io/f/aa568418-002c-40a1-b13f-a0fd7eef1353-9w6i5v.svg",
-        ],
+        imageUrl: product.imageUrl || FALLBACK_IMAGE_URL,
+        productImages: product.productImages || [FALLBACK_IMAGE_URL],
         description: product.description || null,
         isActive: product.isActive ?? true,
         isWholesale: product.isWholesale,
