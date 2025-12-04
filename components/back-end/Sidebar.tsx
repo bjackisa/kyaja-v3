@@ -30,8 +30,8 @@ import { Button } from "@/components/ui/button";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 // import { sidebarLinks } from "@/config/sidebar";
-import Image from "next/image";
 import { MdEmail } from "react-icons/md";
+import CustomImage from "../ui/CustomImage";
 
 export default function Sidebar({ session }: any) {
   const [isOpen, setIsOpen] = useState(false);
@@ -176,7 +176,7 @@ export default function Sidebar({ session }: any) {
       <div className="flex h-full max-h-screen flex-col gap-2">
         <div className="flex flex-shrink-0 h-14 items-center border-b px-4 lg:h-[60px] lg:px-6">
           <Link href="/" className="flex items-center gap-2 font-semibold">
-            <Image
+            <CustomImage
               src="/logo.svg"
               alt="kyaja logo"
               className="w-14 h-14 mt-2"

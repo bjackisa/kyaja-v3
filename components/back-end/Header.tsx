@@ -28,9 +28,9 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
+import CustomImage from "../ui/CustomImage";
 import UserAvatar from "../UserAvatar";
 
 interface HeaderProps {
@@ -160,7 +160,7 @@ export default function Header({ session }: HeaderProps) {
         <SheetContent side="left" className="flex flex-col">
           <nav className="grid gap-2 text-lg font-medium">
             <Link href="/" className="flex items-center gap-2 font-semibold" onClick={handleLinkClick}>
-              <Image src="/logo.svg" alt="kyaja logo" className="w-14 h-14 mt-2" width={300} height={300}/>
+              <CustomImage src="/logo.svg" alt="kyaja logo" className="w-14 h-14 mt-2" width={300} height={300}/>
               <span className="">Kyaja</span>
             </Link>
             {filteredSidebarLinks.map((item: any, i) => {

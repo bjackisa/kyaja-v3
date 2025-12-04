@@ -12,9 +12,9 @@ import {
   Phone,
   Package,
 } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import CustomImage from "./ui/CustomImage";
 import { useSession } from "next-auth/react";
 import { useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
@@ -144,7 +144,7 @@ export default function ModernHeader() {
               {/* Left Section - Logo */}
               <Link href="/" className="flex items-center gap-2.5 group flex-shrink-0">
                 <div className="relative">
-                  <Image
+                  <CustomImage
                     src="/logo.svg"
                     alt="Kyaja"
                     width={40}
@@ -245,7 +245,7 @@ export default function ModernHeader() {
           <div className="px-3 py-2.5">
             {/* Logo - Compact */}
             <Link href="/" className="flex items-center justify-center gap-2 group mb-2.5">
-              <Image
+              <CustomImage
                 src="/logo.svg"
                 alt="Kyaja"
                 width={28}
