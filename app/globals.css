@@ -103,15 +103,67 @@ body {
   text-transform: capitalize;
 }
 :root {
-  --primary-color: #f68b1e;
-  --secondary-color: #008b8b;
-  --border-color: #e2e2e2;
-  --font-color-dark: #333333;
+  /* Primary Brand Colors - AliExpress Inspired */
+  --primary-color: #ff6a00;
+  --primary-hover: #ff8534;
+  --primary-dark: #e55d00;
+  --secondary-color: #ff4747;
+  --accent-color: #00c9a7;
+  
+  /* Neutral Colors */
   --background-color: #f5f5f5;
-  --font-size-large: 18px;
-  --font-size-medium: 16px;
-  --font-size-small: 14px;
-  --font-size-xsmall: 12px;
+  --background-light: #fafafa;
+  --surface-color: #ffffff;
+  --border-color: #e5e5e5;
+  --border-light: #f0f0f0;
+  
+  /* Text Colors */
+  --text-primary: #1a1a1a;
+  --text-secondary: #666666;
+  --text-tertiary: #999999;
+  --text-link: #0066cc;
+  
+  /* Status Colors */
+  --success-color: #00c853;
+  --warning-color: #ffa726;
+  --error-color: #f44336;
+  --info-color: #2196f3;
+  
+  /* Typography */
+  --font-size-xs: 11px;
+  --font-size-sm: 12px;
+  --font-size-base: 14px;
+  --font-size-md: 16px;
+  --font-size-lg: 18px;
+  --font-size-xl: 20px;
+  --font-size-2xl: 24px;
+  --font-size-3xl: 30px;
+  
+  /* Spacing */
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 12px;
+  --spacing-lg: 16px;
+  --spacing-xl: 24px;
+  --spacing-2xl: 32px;
+  
+  /* Border Radius */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-full: 9999px;
+  
+  /* Shadows */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 2px 8px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 4px 16px rgba(0, 0, 0, 0.1);
+  --shadow-xl: 0 8px 24px rgba(0, 0, 0, 0.12);
+  
+  /* Transitions */
+  --transition-fast: 150ms ease-in-out;
+  --transition-base: 250ms ease-in-out;
+  --transition-slow: 350ms ease-in-out;
 }
 .image-wrapper {
   position: relative;

@@ -40,16 +40,16 @@ export default function CategoryNav({ departments, isLoading }: { departments: D
   }
 
   return (
-    <div className="relative w-full bg-gradient-to-r from-black via-neutral-900 to-black border-b border-orange-500/20">
-      <div className="relative flex items-center px-4 py-2">
-        {/* Left Arrow with modern styling */}
+    <div className="relative w-full bg-white border-b border-gray-200">
+      <div className="relative flex items-center px-4 py-0">
+        {/* Left Arrow - AliExpress Style */}
         {showLeftArrow && (
           <button
             onClick={() => scroll('left')}
-            className="absolute left-2 z-20 hidden h-8 w-8 items-center justify-center rounded-full bg-black/80 backdrop-blur-sm border border-orange-500/30 text-orange-500 shadow-lg shadow-orange-500/20 transition-all hover:bg-orange-500 hover:text-black hover:scale-110 hover:shadow-orange-500/40 md:flex"
+            className="absolute left-1 z-20 hidden h-7 w-7 items-center justify-center rounded-full bg-white border border-gray-300 text-gray-600 shadow-sm transition-all hover:bg-gray-50 hover:border-[#ff6a00] hover:text-[#ff6a00] md:flex"
             aria-label="Scroll left"
           >
-            <ChevronLeft className="h-5 w-5" />
+            <ChevronLeft className="h-4 w-4" />
           </button>
         )}
 
@@ -59,38 +59,33 @@ export default function CategoryNav({ departments, isLoading }: { departments: D
         ) : (
           <div
             ref={scrollContainerRef}
-            className="flex w-full items-center gap-3 overflow-x-auto scroll-smooth px-12 scrollbar-hide"
+            className="flex w-full items-center gap-1 overflow-x-auto scroll-smooth px-10 scrollbar-hide"
           >
             {departments.map((category, i) => (
               <Link
                 key={i}
                 href={`/d/${category.slug}`}
-                className="group relative px-4 py-1.5 text-sm font-medium text-white/90 transition-all hover:text-orange-500 whitespace-nowrap"
+                className="group relative px-3 py-2.5 text-xs font-medium text-gray-700 transition-all hover:text-[#ff6a00] whitespace-nowrap"
               >
                 <span className="relative z-10">{category.title}</span>
-                {/* Hover background effect */}
-                <span className="absolute inset-0 rounded-lg bg-gradient-to-r from-orange-500/0 via-orange-500/10 to-orange-500/0 opacity-0 transition-opacity group-hover:opacity-100" />
                 {/* Bottom border on hover */}
-                <span className="absolute bottom-0 left-1/2 h-0.5 w-0 bg-gradient-to-r from-transparent via-orange-500 to-transparent transition-all group-hover:w-full group-hover:left-0" />
+                <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#ff6a00] scale-x-0 transition-transform group-hover:scale-x-100" />
               </Link>
             ))}
           </div>
         )}
 
-        {/* Right Arrow with modern styling */}
+        {/* Right Arrow - AliExpress Style */}
         {showRightArrow && (
           <button
             onClick={() => scroll('right')}
-            className="absolute right-2 z-20 hidden h-8 w-8 items-center justify-center rounded-full bg-black/80 backdrop-blur-sm border border-orange-500/30 text-orange-500 shadow-lg shadow-orange-500/20 transition-all hover:bg-orange-500 hover:text-black hover:scale-110 hover:shadow-orange-500/40 md:flex"
+            className="absolute right-1 z-20 hidden h-7 w-7 items-center justify-center rounded-full bg-white border border-gray-300 text-gray-600 shadow-sm transition-all hover:bg-gray-50 hover:border-[#ff6a00] hover:text-[#ff6a00] md:flex"
             aria-label="Scroll right"
           >
-            <ChevronRight className="h-5 w-5" />
+            <ChevronRight className="h-4 w-4" />
           </button>
         )}
       </div>
-
-      {/* Subtle gradient overlay for depth */}
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/20 pointer-events-none" />
     </div>
   )
 }

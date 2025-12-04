@@ -77,27 +77,27 @@ export default function HomeCategories({title  , departments}:{title:string , de
     //     }
     //   ]
   return (
-    <section className="py-2 bg-white md:px-5 px-3">
+    <section className="py-4 bg-white md:px-4 px-3 rounded-lg border border-gray-200 shadow-sm">
       <div className="mx-auto max-w-7xl">
-      <div className="flex justify-between items-center">
-      <h2 className="text-xl font-bold tracking-tight text-gray-800 mb-8">
+      <div className="flex justify-between items-center mb-4">
+      <h2 className="text-base font-bold tracking-tight text-gray-900">
       {title}
         </h2>
         <Link href="/department-d">
-        <p className="text-sm text-blue-600 group-hover:underline md:block hidden">
-          See more
+        <p className="text-xs text-[#ff6a00] hover:text-[#ff8534] font-semibold md:block hidden transition-colors">
+          See All →
         </p>
         </Link>
    
       </div>
-        <div className="grid grid-cols-2 gap-x-4 gap-y-6 sm:gap-x-6 md:grid-cols-5 md:gap-y-8">
+        <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-5">
           {departments?.map((category) => (
             <CategoryCard key={category.id} category={category} link="d"/>
           ))}
         </div>
        <Link href="/department-d">
-       <p className="text-sm text-blue-600 group-hover:underline block md:hidden mt-5">
-          See more
+       <p className="text-xs text-[#ff6a00] hover:text-[#ff8534] font-semibold block md:hidden mt-4 text-center transition-colors">
+          See All →
         </p></Link>
       </div>
     </section>

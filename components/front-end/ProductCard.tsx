@@ -77,35 +77,34 @@ export default function ProductCard({
   const discount = product.isDiscount ? product.discount : 0;
 
   return (
-    <div className="group flex flex-col h-full overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm transition-all hover:shadow-md">
-      {/* Rest of your JSX remains the same */}
+    <div className="group flex flex-col h-full overflow-hidden rounded-lg border border-gray-200 bg-white transition-all hover:shadow-lg hover:border-gray-300">
       <a
         onClick={handleClick}
         href={`/p/${product.slug}`}
-        className="relative aspect-square overflow-hidden"
+        className="relative aspect-square overflow-hidden bg-gray-50"
       >
         <Image
           src={product.imageUrl ?? DEFAULT_IMAGE}
           alt={product.title}
           layout="fill"
           objectFit="cover"
-          className="transition-transform duration-300 group-hover:scale-105"
+          className="transition-transform duration-500 group-hover:scale-110"
           placeholder="blur"
           blurDataURL={DEFAULT_BLUR}
         />
         {product.isDiscount && discount > 0 && (
-          <div className="absolute top-2 left-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded">
-            -{discount.toFixed(0)}%
+          <div className="absolute top-2 left-2 bg-[#ff4747] text-white text-[10px] font-bold px-2 py-1 rounded-sm shadow-md">
+            -{discount.toFixed(0)}% OFF
           </div>
         )}
       </a>
-      <div className="flex flex-col justify-between p-4 flex-grow">
+      <div className="flex flex-col justify-between p-3 flex-grow">
         <a onClick={handleClick} href={`/p/${product.slug}`}>
-          <h2 className="text-sm font-medium text-gray-900 line-clamp-1 mb-2">
+          <h2 className="text-xs font-normal text-gray-700 line-clamp-2 mb-2 leading-relaxed group-hover:text-[#ff6a00] transition-colors">
             {product.title}
           </h2>
-          <div className="flex lg:flex-row flex-col lg:items-center justify-between mt-1 lg:mb-0 mb-2">
-            <p className="font-bold lg:text-base text-base text-black">
+          <div className="flex flex-col gap-1 mt-2">
+            <p className="font-bold text-base text-[#ff6a00]">
               UGX{" "}
               {formatMoney(
                 product.salePrice >= 1
@@ -115,7 +114,7 @@ export default function ProductCard({
             </p>
             {product.salePrice >= 1 &&
               product.productPrice > product.salePrice && (
-                <s className="text-xs text-gray-500">
+                <s className="text-xs text-gray-400">
                   UGX {formatMoney(product.productPrice)}
                 </s>
               )}
@@ -124,9 +123,9 @@ export default function ProductCard({
         {showAddToCart && (
           <button
             onClick={handleAddToCart}
-            className="mt-4 w-full bg-[#F68B1E] hover:bg-[#F68B1E]/70 text-white font-medium py-3 px-4 rounded text-sm transition-colors duration-300 text-center flex items-center md:gap-4 gap-2 justify-center whitespace-nowrap"
+            className="mt-3 w-full bg-[#ff6a00] hover:bg-[#ff8534] text-white font-semibold py-2 px-3 rounded-md text-xs transition-all duration-200 text-center flex items-center gap-2 justify-center whitespace-nowrap shadow-sm hover:shadow-md"
           >
-            <ShoppingCart size={18} className="md:block hidden" />
+            <ShoppingCart size={14} />
             Add to cart
           </button>
         )}

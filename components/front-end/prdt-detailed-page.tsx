@@ -46,7 +46,7 @@ export default function ProductDetailPage({ slug }: { slug: string }) {
 
   return (
     <>
-      <div className="max-w-[90rem] mx-auto min-h-screen px-1 md:px-6 lg:px-8 roboto relative pt-4 md:pt-8 lg:pt-10">
+      <div className="max-w-[90rem] mx-auto min-h-screen px-2 md:px-6 lg:px-8 roboto relative pt-3 md:pt-6 lg:pt-8">
        
         
         <div className="flex flex-col md:gap-6 gap-2 md:mt-[3%] mt-[20%]">
@@ -69,9 +69,9 @@ export default function ProductDetailPage({ slug }: { slug: string }) {
           }} 
         />
           {/* Main Product Section */}
-          <div className="w-full min-h-[95vh] justify-between flex flex-col xl:flex-row gap-6 ">
+          <div className="w-full min-h-[95vh] justify-between flex flex-col xl:flex-row gap-4 ">
             {/* Product Details */}
-            <div className="xl:w-3/4 w-full bg-white flex flex-col lg:flex-row p-6 gap-6 shadow-lg rounded-xl border border-gray-100">
+            <div className="xl:w-3/4 w-full bg-white flex flex-col lg:flex-row p-4 md:p-6 gap-4 md:gap-6 shadow-sm rounded-lg border border-gray-200">
               {/* Product Images */}
               <div className="lg:w-2/5 w-full flex flex-col gap-6">
                 <ProductSlider data={product.productImages} />
@@ -103,18 +103,18 @@ export default function ProductDetailPage({ slug }: { slug: string }) {
                 <div className="w-full h-px bg-gradient-to-r from-transparent via-gray-300 to-transparent"></div>
 
                 {/* Pricing Section */}
-                <div className="bg-gradient-to-r from-orange-50 to-yellow-50 p-4 rounded-lg border border-orange-200">
-                  <div className="flex gap-3 items-center flex-wrap">
-                    <h2 className="text-lg text-gray-900 font-bold">
+                <div className="bg-[#fff5f0] p-4 rounded-lg border border-[#ffe4d6]">
+                  <div className="flex gap-2.5 items-center flex-wrap">
+                    <h2 className="text-2xl text-[#ff6a00] font-bold">
                       UGX {formatMoney(product.salePrice < 1 ? product.productPrice : product.salePrice)}
                     </h2>
                     {product.salePrice > 0 && (
-                      <h3 className="line-through text-gray-500 text-sm">
+                      <h3 className="line-through text-gray-400 text-base">
                         UGX {formatMoney(product.productPrice)}
                       </h3>
                     )}
                     {product.isDiscount && discount > 0 && (
-                      <span className="bg-orange-500 text-white px-3 py-1 rounded-full text-xs font-semibold">
+                      <span className="bg-[#ff4747] text-white px-2.5 py-1 rounded text-xs font-bold shadow-sm">
                         -{discount.toFixed(0)}% OFF
                       </span>
                     )}
@@ -122,13 +122,13 @@ export default function ProductDetailPage({ slug }: { slug: string }) {
                 </div>
 
                 {/* Stock and Rating */}
-                <div className="flex flex-col gap-4">
+                <div className="flex flex-col gap-3">
                   <div className="flex flex-col gap-2">
-                    <p className="text-lg text-green-600 font-semibold">
+                    <p className="text-sm text-[#00c853] font-semibold">
                       ✓ {product.productStock} Items In Stock
                     </p>
-                    <p className="text-sm text-gray-600">
-                      🚚Note All delivery Fees are after Delivery
+                    <p className="text-xs text-gray-500">
+                      🚚 Delivery fees calculated at checkout
                     </p>
                     <div className="flex gap-3 items-center">
                       <div className="flex">

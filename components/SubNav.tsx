@@ -91,13 +91,13 @@ export default function ModernHeader() {
 
   return (
     <>
-      {/* Rotating Promotional Bar */}
-      <div className="bg-gradient-to-r from-orange-500 to-black text-white py-3 px-4 overflow-hidden relative">
-        <div className="max-w-screen-2xl mx-auto relative h-6">
+      {/* Rotating Promotional Bar - AliExpress Style */}
+      <div className="bg-gradient-to-r from-[#ff6a00] via-[#ff4747] to-[#ff6a00] text-white py-2.5 px-4 overflow-hidden relative">
+        <div className="max-w-screen-2xl mx-auto relative h-5">
           {PROMO_MESSAGES.map((message, index) => (
             <div
               key={index}
-              className={`text-center text-sm font-medium transition-all duration-700 absolute inset-0 flex items-center justify-center ${
+              className={`text-center text-xs font-semibold transition-all duration-700 absolute inset-0 flex items-center justify-center tracking-wide ${
                 index === currentPromoIndex
                   ? "opacity-100 translate-y-0"
                   : "opacity-0 translate-y-4"
@@ -106,11 +106,11 @@ export default function ModernHeader() {
                 pointerEvents: index === currentPromoIndex ? "auto" : "none",
               }}
             >
-              <div className="hidden sm:block whitespace-nowrap">
+              <div className="hidden sm:block whitespace-nowrap uppercase">
                 {message}
               </div>
               <div className="sm:hidden w-full overflow-hidden">
-                <div className="animate-scroll-text whitespace-nowrap inline-block">
+                <div className="animate-scroll-text whitespace-nowrap inline-block uppercase">
                   {message}
                 </div>
               </div>
@@ -119,15 +119,15 @@ export default function ModernHeader() {
         </div>
         
         {/* Promo Navigation Dots - Desktop Only */}
-        <div className="hidden sm:flex absolute bottom-1 left-1/2 -translate-x-1/2 gap-1.5">
+        <div className="hidden sm:flex absolute bottom-0.5 left-1/2 -translate-x-1/2 gap-1">
           {PROMO_MESSAGES.map((_, index) => (
             <button
               key={index}
               onClick={() => setCurrentPromoIndex(index)}
-              className={`w-1.5 h-1.5 rounded-full transition-all ${
+              className={`h-1 rounded-full transition-all ${
                 index === currentPromoIndex
-                  ? "bg-white w-4"
-                  : "bg-white/50 hover:bg-white/75"
+                  ? "bg-white w-3"
+                  : "bg-white/40 w-1 hover:bg-white/60"
               }`}
               aria-label={`Go to promotion ${index + 1}`}
             />
@@ -135,31 +135,31 @@ export default function ModernHeader() {
         </div>
       </div>
 
-      {/* Main Header */}
-      <header className={`sticky top-0 z-50 bg-white border-b transition-shadow duration-300 ${isScrolled ? 'shadow-lg' : 'shadow-sm'}`}>
+      {/* Main Header - AliExpress Style */}
+      <header className={`sticky top-0 z-50 bg-white transition-shadow duration-300 ${isScrolled ? 'shadow-md' : 'border-b border-gray-200'}`}>
         {/* Desktop Navigation */}
         <div className="hidden lg:block">
-          <div className="max-w-screen-2xl mx-auto px-4 lg:px-6">
-            <div className="flex items-center justify-between h-20">
+          <div className="max-w-screen-2xl mx-auto px-6">
+            <div className="flex items-center justify-between h-16">
               {/* Left Section - Logo */}
-              <Link href="/" className="flex items-center gap-3 group">
+              <Link href="/" className="flex items-center gap-2.5 group flex-shrink-0">
                 <div className="relative">
                   <Image
                     src="/logo.svg"
                     alt="Kyaja"
-                    width={48}
-                    height={48}
-                    className="w-12 h-12 transition-transform group-hover:scale-110"
+                    width={40}
+                    height={40}
+                    className="w-10 h-10 transition-transform group-hover:scale-105"
                   />
                 </div>
                 <div>
-                  <h1 className="text-2xl font-black text-gray-900 tracking-tight">KYAJA</h1>
-                  <p className="text-xs text-gray-500 -mt-1">Shop Smart, Live Better</p>
+                  <h1 className="text-xl font-extrabold text-[#ff6a00] tracking-tight">KYAJA</h1>
+                  <p className="text-[10px] text-gray-500 -mt-0.5 font-medium">Shop Smart, Live Better</p>
                 </div>
               </Link>
 
               {/* Center Section - Search */}
-              <div className="flex flex-1 max-w-2xl mx-8">
+              <div className="flex flex-1 max-w-3xl mx-6">
                 <div className="w-full">
                   <div className="relative group">
                     <input
@@ -167,13 +167,13 @@ export default function ModernHeader() {
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
                       onKeyPress={handleKeyPress}
-                      placeholder="Search for products, brands, categories..."
-                      className="w-full h-12 pl-12 pr-12 rounded-full border-2 border-gray-200 focus:border-orange-500 focus:outline-none transition-colors bg-gray-50 focus:bg-white text-gray-900 placeholder-gray-500"
+                      placeholder="Search for products, brands and more..."
+                      className="w-full h-10 pl-11 pr-24 rounded-md border border-gray-300 focus:border-[#ff6a00] focus:outline-none focus:ring-2 focus:ring-[#ff6a00]/20 transition-all bg-white text-sm text-gray-900 placeholder-gray-400"
                     />
-                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-orange-500 transition-colors" />
+                    <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 group-focus-within:text-[#ff6a00] transition-colors" />
                     <button
                       onClick={handleSearchSubmit}
-                      className="absolute right-2 top-1/2 -translate-y-1/2 bg-orange-500 hover:bg-orange-600 text-white px-6 py-2 rounded-full font-medium transition-colors"
+                      className="absolute right-1 top-1/2 -translate-y-1/2 bg-[#ff6a00] hover:bg-[#ff8534] text-white px-5 py-1.5 rounded text-sm font-semibold transition-colors shadow-sm"
                     >
                       Search
                     </button>
@@ -182,13 +182,13 @@ export default function ModernHeader() {
               </div>
 
               {/* Right Section - Actions */}
-              <div className="flex items-center gap-2 lg:gap-4">
+              <div className="flex items-center gap-1 flex-shrink-0">
                 {/* Location */}
-                <button className="hidden xl:flex items-center gap-2 px-3 py-2 hover:bg-gray-100 rounded-lg transition-colors group">
-                  <MapPin className="w-5 h-5 text-gray-600 group-hover:text-orange-500 transition-colors" />
+                <button className="hidden xl:flex items-center gap-1.5 px-2.5 py-1.5 hover:bg-gray-50 rounded-md transition-colors group">
+                  <MapPin className="w-4 h-4 text-gray-500 group-hover:text-[#ff6a00] transition-colors" />
                   <div className="text-left">
-                    <p className="text-xs text-gray-500">Deliver to</p>
-                    <p className="text-sm font-semibold text-gray-900">Uganda</p>
+                    <p className="text-[10px] text-gray-400 leading-tight">Ship to</p>
+                    <p className="text-xs font-semibold text-gray-700">Uganda</p>
                   </div>
                 </button>
 
@@ -198,12 +198,12 @@ export default function ModernHeader() {
                 ) : (
                   <Link
                     href="/login"
-                    className="flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors group"
+                    className="flex items-center gap-1.5 px-3 py-1.5 hover:bg-gray-50 rounded-md transition-colors group"
                   >
-                    <LogIn className="w-5 h-5 text-gray-700 group-hover:text-orange-500 transition-colors" />
+                    <User className="w-4 h-4 text-gray-500 group-hover:text-[#ff6a00] transition-colors" />
                     <div className="text-left">
-                      <p className="text-xs text-gray-500">Hello, Sign in</p>
-                      <p className="text-sm font-semibold text-gray-900">Account</p>
+                      <p className="text-[10px] text-gray-400 leading-tight">Hello, Sign in</p>
+                      <p className="text-xs font-semibold text-gray-700">Account</p>
                     </div>
                   </Link>
                 )}
@@ -211,23 +211,23 @@ export default function ModernHeader() {
                 {/* Support */}
                 <button
                   onClick={() => setShowSupportModal(true)}
-                  className="flex items-center gap-2 px-3 py-2 hover:bg-gray-100 rounded-lg transition-colors group"
+                  className="flex items-center gap-1.5 px-2.5 py-1.5 hover:bg-gray-50 rounded-md transition-colors group"
                 >
-                  <MessageSquare className="w-5 h-5 text-gray-600 group-hover:text-orange-500 transition-colors" />
+                  <MessageSquare className="w-4 h-4 text-gray-500 group-hover:text-[#ff6a00] transition-colors" />
                   <div className="text-left">
-                    <p className="text-xs text-gray-500">Customer</p>
-                    <p className="text-sm font-semibold text-gray-900">Support</p>
+                    <p className="text-[10px] text-gray-400 leading-tight">Customer</p>
+                    <p className="text-xs font-semibold text-gray-700">Support</p>
                   </div>
                 </button>
 
                 {/* Cart */}
                 <Link
                   href="/cart"
-                  className="relative p-2 hover:bg-gray-100 rounded-lg transition-colors group"
+                  className="relative p-2 hover:bg-gray-50 rounded-md transition-colors group ml-1"
                 >
-                  <ShoppingCart className="w-6 h-6 text-gray-700 group-hover:text-orange-500 transition-colors" />
+                  <ShoppingCart className="w-5 h-5 text-gray-700 group-hover:text-[#ff6a00] transition-colors" />
                   {cartItems.length > 0 && (
-                    <span className="absolute -top-1 -right-1 bg-orange-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center animate-pulse">
+                    <span className="absolute -top-0.5 -right-0.5 bg-[#ff4747] text-white text-[10px] font-bold rounded-full min-w-[18px] h-[18px] flex items-center justify-center px-1">
                       {cartItems.length}
                     </span>
                   )}
@@ -240,21 +240,21 @@ export default function ModernHeader() {
           <CategoryNav departments={departments} isLoading={isLoading || isLoadingCat} />
         </div>
 
-        {/* Mobile Navigation - Simplified */}
+        {/* Mobile Navigation - AliExpress Style */}
         <div className="lg:hidden">
-          <div className="px-3 py-2">
-            {/* Logo Only - Compact */}
-            <Link href="/" className="flex items-center justify-center gap-2 group mb-2">
+          <div className="px-3 py-2.5">
+            {/* Logo - Compact */}
+            <Link href="/" className="flex items-center justify-center gap-2 group mb-2.5">
               <Image
                 src="/logo.svg"
                 alt="Kyaja"
-                width={32}
-                height={32}
-                className="w-8 h-8"
+                width={28}
+                height={28}
+                className="w-7 h-7"
               />
               <div>
-                <h1 className="text-lg font-black text-gray-900 tracking-tight leading-none">KYAJA</h1>
-                <p className="text-[10px] text-gray-500 leading-none">Shop Smart, Live Better</p>
+                <h1 className="text-base font-extrabold text-[#ff6a00] tracking-tight leading-none">KYAJA</h1>
+                <p className="text-[9px] text-gray-500 leading-none font-medium">Shop Smart, Live Better</p>
               </div>
             </Link>
 
@@ -266,12 +266,12 @@ export default function ModernHeader() {
                 onChange={(e) => setSearchQuery(e.target.value)}
                 onKeyPress={handleKeyPress}
                 placeholder="Search products..."
-                className="w-full h-9 pl-9 pr-16 rounded-full border border-gray-300 focus:border-orange-500 focus:outline-none transition-colors bg-gray-50 focus:bg-white text-gray-900 text-sm"
+                className="w-full h-9 pl-9 pr-16 rounded-md border border-gray-300 focus:border-[#ff6a00] focus:outline-none focus:ring-1 focus:ring-[#ff6a00]/30 transition-all bg-white text-gray-900 text-xs"
               />
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400" />
               <button
                 onClick={handleSearchSubmit}
-                className="absolute right-1 top-1/2 -translate-y-1/2 bg-orange-500 hover:bg-orange-600 text-white px-3 py-1 rounded-full text-xs font-medium transition-colors"
+                className="absolute right-1 top-1/2 -translate-y-1/2 bg-[#ff6a00] hover:bg-[#ff8534] text-white px-3 py-1.5 rounded text-xs font-semibold transition-colors"
               >
                 Search
               </button>

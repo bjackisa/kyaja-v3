@@ -21,7 +21,7 @@ export default async function FrontLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <div className={`${geistSans.variable} ${geistMono.variable} antialiased relative lg:px-0 md:px-0 px-0 min-h-screen bg-gradient-to-t from-[#e3e6e6] to-white`}>
+    <div className={`${geistSans.variable} ${geistMono.variable} antialiased relative lg:px-0 md:px-0 px-0 min-h-screen bg-[#f5f5f5]`}>
       <div className="sticky top-0 h-[5vh] z-30">
         <SubNav />
       </div>

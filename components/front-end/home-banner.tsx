@@ -83,26 +83,26 @@ export default function HomeBanner({ banners, topDeals }: HomeBannerProps) {
   }
 
   return (
-    <div className="container mx-auto mt-6 md:px-4">
+    <div className="container mx-auto mt-4 md:px-4">
       {/* Desktop Layout */}
-      <div className="hidden lg:flex w-full gap-4 h-[320px]">
+      <div className="hidden lg:flex w-full gap-3 h-[340px]">
         {/* Left Side Banner */}
         <Link href="/category-d" className="w-1/4">
-          <div className="relative h-full overflow-hidden rounded-2xl shadow hover:shadow-xl transition-shadow duration-300">
+          <div className="relative h-full overflow-hidden rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-all duration-300">
             <Image
               placeholder="blur"
               blurDataURL={DEFAULT_BLUR}
               src="https://img.ltwebstatic.com/images3_ccc/2024/08/28/32/1724814607d0aea17ca9b86f4fc4e69c679012a7cd.webp"
               alt="Sale Zone"
               fill
-              className="object-cover hover:scale-105 transition-transform duration-300"
+              className="object-cover hover:scale-105 transition-transform duration-500"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
           </div>
         </Link>
 
         {/* Center Carousel */}
-        <div className="relative w-1/2 overflow-hidden rounded-2xl shadow">
+        <div className="relative w-1/2 overflow-hidden rounded-lg border border-gray-200 shadow-sm">
           <div className="relative w-full h-full">
             {banners.map((item, index) => (
               <Link
@@ -160,44 +160,42 @@ export default function HomeBanner({ banners, topDeals }: HomeBannerProps) {
         </div>
 
         {/* Right Flash Deals */}
-        <div className={`w-1/4 ${flashHeader.bgColor} rounded-2xl p-4 shadow`}>
-          <div className="flex items-center justify-between mb-4">
-            <h3
-              className={`flex items-center gap-2 text-lg font-bold ${flashHeader.color}`}
-            >
-              <span className="text-xl">{flashHeader.emoji}</span>
-              {flashHeader.title}
+        <div className="w-1/4 bg-white rounded-lg border border-gray-200 p-3 shadow-sm">
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="flex items-center gap-1.5 text-sm font-bold text-gray-900">
+              <span className="text-base">⚡</span>
+              Flash Deals
             </h3>
             <a
               href="/deals"
-              className={`text-sm font-medium ${flashHeader.color} hover:underline flex items-center gap-1`}
+              className="text-xs font-semibold text-[#ff6a00] hover:text-[#ff8534] flex items-center gap-0.5 transition-colors"
             >
               See All <ArrowRight className="w-3 h-3" />
             </a>
           </div>
 
-          <div className="grid grid-cols-2 gap-3 h-[240px] overflow-y-auto">
+          <div className="grid grid-cols-2 gap-2 h-[280px] overflow-y-auto scrollbar-hide">
             {topDeals?.slice(0, 6).map((deal, index) => (
               <Link
                 key={index}
                 href={`/p/${deal.slug}`}
-                className="group relative overflow-hidden rounded-xl bg-white shadow-sm hover:shadow-md transition-all duration-300"
+                className="group relative overflow-hidden rounded-lg border border-gray-200 bg-gray-50 hover:shadow-md transition-all duration-300"
               >
                 <div className="aspect-square relative">
                   <Image
                     src={deal.imageUrl}
                     alt={deal.slug}
                     fill
-                    className="object-cover group-hover:scale-105 transition-transform duration-300"
+                    className="object-cover group-hover:scale-110 transition-transform duration-500"
                   />
-                  <div className="absolute top-2 left-2">
-                    <span className="bg-red-500 text-white px-2 py-1 rounded-full text-xs font-bold">
+                  <div className="absolute top-1.5 left-1.5">
+                    <span className="bg-[#ff4747] text-white px-1.5 py-0.5 rounded text-[9px] font-bold shadow-sm">
                       -{Math.floor(Math.random() * 50 + 10)}%
                     </span>
                   </div>
                 </div>
-                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-2">
-                  <div className="text-white text-sm font-semibold">
+                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-1.5">
+                  <div className="text-white text-[10px] font-bold">
                     Shs{" "}
                     {new Intl.NumberFormat("en-US").format(deal.productPrice)}
                   </div>
@@ -209,9 +207,9 @@ export default function HomeBanner({ banners, topDeals }: HomeBannerProps) {
       </div>
 
       {/* Mobile & Tablet Layout */}
-      <div className="lg:hidden space-y-4">
+      <div className="lg:hidden space-y-3">
         {/* Main Banner Carousel */}
-        <div className="relative overflow-hidden rounded-2xl shadow h-[200px] md:h-[250px]">
+        <div className="relative overflow-hidden rounded-lg border border-gray-200 shadow-sm h-[180px] md:h-[220px]">
           <div className="relative w-full h-full">
             {banners.map((item, index) => (
               <Link
@@ -231,19 +229,19 @@ export default function HomeBanner({ banners, topDeals }: HomeBannerProps) {
                   height={3000}
                   priority={index === currentSlide}
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/15 to-transparent" />
               </Link>
             ))}
           </div>
 
           {/* Mobile Carousel Controls */}
-          <div className="absolute inset-x-0 bottom-4 flex justify-center z-20">
-            <div className="flex space-x-2">
+          <div className="absolute inset-x-0 bottom-2 flex justify-center z-20">
+            <div className="flex space-x-1.5">
               {banners.map((_, index) => (
                 <button
                   key={index}
-                  className={`h-2 rounded-full transition-all ${
-                    index === currentSlide ? "bg-white w-6" : "bg-white/50 w-2"
+                  className={`h-1 rounded-full transition-all ${
+                    index === currentSlide ? "bg-white w-4" : "bg-white/50 w-1"
                   }`}
                   onClick={() => setCurrentSlide(index)}
                 />
@@ -253,17 +251,15 @@ export default function HomeBanner({ banners, topDeals }: HomeBannerProps) {
         </div>
 
         {/* Flash Deals Section */}
-        <div className={`${flashHeader.bgColor} rounded-2xl p-4 shadow`}>
-          <div className="flex items-center justify-between mb-4">
-            <h3
-              className={`flex items-center gap-2 text-lg font-bold ${flashHeader.color}`}
-            >
-              <span className="text-xl">{flashHeader.emoji}</span>
-              {flashHeader.title}
+        <div className="bg-white rounded-lg border border-gray-200 p-3 shadow-sm">
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="flex items-center gap-1.5 text-sm font-bold text-gray-900">
+              <span className="text-base">⚡</span>
+              Flash Deals
             </h3>
             <a
               href="/deals"
-              className={`text-sm font-medium ${flashHeader.color} hover:underline flex items-center gap-1`}
+              className="text-xs font-semibold text-[#ff6a00] hover:text-[#ff8534] flex items-center gap-0.5 transition-colors"
             >
               See All <ArrowRight className="w-3 h-3" />
             </a>
@@ -282,23 +278,23 @@ export default function HomeBanner({ banners, topDeals }: HomeBannerProps) {
                       <Link
                         key={dealIndex}
                         href={`/p/${deal.slug}`}
-                        className="group relative overflow-hidden rounded-xl bg-white shadow-sm hover:shadow-md transition-all duration-300"
+                        className="group relative overflow-hidden rounded-lg border border-gray-200 bg-gray-50 hover:shadow-md transition-all duration-300"
                       >
                         <div className="aspect-square relative">
                           <Image
                             src={deal.imageUrl}
                             alt={deal.slug}
                             fill
-                            className="object-cover group-hover:scale-105 transition-transform duration-300"
+                            className="object-cover group-hover:scale-110 transition-transform duration-500"
                           />
-                          <div className="absolute top-2 left-2">
-                            <span className="bg-red-500 text-white px-2 py-1 rounded-full text-xs font-bold">
+                          <div className="absolute top-1.5 left-1.5">
+                            <span className="bg-[#ff4747] text-white px-1.5 py-0.5 rounded text-[9px] font-bold shadow-sm">
                               -{Math.floor(Math.random() * 50 + 10)}%
                             </span>
                           </div>
                         </div>
-                        <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-2">
-                          <div className="text-white text-sm font-bold">
+                        <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-1.5">
+                          <div className="text-white text-[10px] font-bold">
                             Shs{" "}
                             {new Intl.NumberFormat("en-US").format(
                               deal.productPrice
