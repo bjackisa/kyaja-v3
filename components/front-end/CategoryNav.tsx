@@ -1,8 +1,8 @@
 "use client";
 
 import { DEFAULT_BLUR, DEFAULT_IMAGE } from "@/lib/lazyLoading";
-import Image from "next/image";
 import Link from "next/link";
+import CustomImage from "../ui/CustomImage";
 
 export function CategoryNav({ otherCategories }) {
   return (
@@ -15,7 +15,7 @@ export function CategoryNav({ otherCategories }) {
             className="flex flex-col items-center gap-2 w-[80px]"
           >
             <div className="relative w-20 h-20 rounded-full overflow-hidden border">
-              <Image
+              <CustomImage
                 src={category.imageUrl ?? DEFAULT_IMAGE}
                 alt={category.name}
                 fill

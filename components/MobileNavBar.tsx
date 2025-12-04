@@ -6,9 +6,9 @@ import { cn } from "@/lib/utils";
 import { Sheet, SheetContent, SheetTrigger } from "./ui/sheet";
 import { Button } from "./ui/button";
 import { ScrollArea } from "./ui/scroll-area";
-import Image from "next/image";
 import logo from "../public/logo.svg";
 import { Category } from "@/types";
+import CustomImage from "./ui/CustomImage";
 import { TfiMenu } from "react-icons/tfi";
 
 
@@ -39,7 +39,7 @@ export function MobileNavBar({ allCategories }:Category[] | any) {
           <div className="flex h-screen flex-col justify-between border-e bg-white">
             <div className="">
               <Link className="flex items-center lg:gap-0 md:gap-0 gap-2" href="/">
-                <Image
+                <CustomImage
                   src={logo}
                   alt="kyaja logo"
                   className="lg:w-[4rem] w-[3rem] h-[3rem] lg:h-[4rem] mt-4"

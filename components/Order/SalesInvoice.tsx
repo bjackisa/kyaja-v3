@@ -1,7 +1,7 @@
 "use client";
-import Image from "next/image";
 import React, { useRef } from "react";
 import { convertIsoDateToNormal } from "@/lib/convertIsoDatetoNormal";
+import CustomImage from "../ui/CustomImage";
 import { useReactToPrint } from "react-to-print";
 import { formatMoney } from "@/lib/formatMoney";
 
@@ -69,7 +69,7 @@ export default function SalesInvoice({ order }: SalesInvoiceProps) {
               <p>Info.kyaja@gmail.com</p>
             </div>
             <div className="">
-              <Image src="/logo.svg" alt="kyaja logo" className="w-20 h-20" width={300} height={300} />
+              <CustomImage src="/logo.svg" alt="kyaja logo" className="w-20 h-20" width={300} height={300} />
               <span className="text-xl uppercase -mt-5">Kyaja</span>
             </div>
           </div>
@@ -114,7 +114,7 @@ export default function SalesInvoice({ order }: SalesInvoiceProps) {
                   return (
                     <tr key={i} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
                       <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                        <Image src={item.imageUrl} width={249} height={249} alt={item.title} className="rounded-xl w-10 h-10" />
+                        <CustomImage src={item.imageUrl} width={249} height={249} alt={item.title} className="rounded-xl w-10 h-10" />
                       </th>
                       <td className="px-6 py-4 truncate">{item.title}</td>
                       <td className="px-6 py-4">{item.quantity}</td>
