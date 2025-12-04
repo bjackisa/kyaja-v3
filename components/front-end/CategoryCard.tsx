@@ -1,6 +1,6 @@
 import { DEFAULT_BLUR, DEFAULT_IMAGE } from "@/lib/lazyLoading";
-import Image from "next/image";
 import Link from "next/link";
+import CustomImage from "../ui/CustomImage";
 
 export function CategoryCard({
   category,
@@ -14,7 +14,7 @@ export function CategoryCard({
   return (
     <a href={`/${link}/${category.slug}`} className="group block">
       <div className="aspect-square relative overflow-hidden rounded-lg border border-gray-200 bg-gray-50 transition-all duration-300 group-hover:shadow-md group-hover:border-gray-300">
-        <Image
+        <CustomImage
           src={imageUrl}
           alt={category.title}
           fill

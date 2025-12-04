@@ -7,8 +7,8 @@ import "swiper/css/free-mode";
 import "swiper/css/navigation";
 import "swiper/css/thumbs";
 import { Autoplay, FreeMode, Navigation, Thumbs } from "swiper/modules";
-import Image from "next/image";
 import { DEFAULT_BLUR, DEFAULT_IMAGE } from "@/lib/lazyLoading";
+import CustomImage from "../ui/CustomImage";
 type ProductSliderProps = {
   data: string[];
 };
@@ -44,7 +44,7 @@ export default function ProductSlider({ data }: ProductSliderProps) {
           return (
             <SwiperSlide key={i}>
               <div className="relative aspect-square w-full">
-                <Image
+                <CustomImage
                   src={image ?? DEFAULT_IMAGE}
                   alt={`Product Image`}
                   className="object-contain"
@@ -80,7 +80,7 @@ export default function ProductSlider({ data }: ProductSliderProps) {
           return (
             <SwiperSlide key={i}>
               <div className="relative aspect-square w-full">
-                <Image
+                <CustomImage
                   src={image}
                   alt={`Thumbnail Image`}
                   className="object-cover rounded-lg"

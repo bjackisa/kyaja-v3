@@ -1,6 +1,6 @@
 import { DEFAULT_BLUR, DEFAULT_IMAGE } from "@/lib/lazyLoading";
-import Image from "next/image";
 import React from "react";
+import CustomImage from "../ui/CustomImage";
 
 export default function ImageColumn({
   row,
@@ -14,7 +14,7 @@ export default function ImageColumn({
   // console.log(imageUrl);
   return (
     <div className="shrink-0">
-      <Image
+      <CustomImage
         alt={`${accessorKey}`}
         className="aspect-square rounded-md object-cover"
         height="50"
