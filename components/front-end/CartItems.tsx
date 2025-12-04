@@ -44,18 +44,29 @@ export default function CartItems({ cartItems }:any) {
   return (
     <div className="md:col-span-8 col-span-full">
       {cartItems.length > 0 && (
-        <>
-          <div className="flex justify-between items-center">
-            <h2 className="py-2 mb-6 text-lg lg:text-2xl">
-              Shopping Cart({cartItems.length})
-            </h2>
-            <Button asChild variant={"outline"}>
-              <Link href="/">
-                <MoveLeft className="w-4 h-4 mr-2" />
-                <span className="text-xs lg:text-sm md:text-sm">Continue Shopping</span>
-              </Link>
-            </Button>
+        <div className="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden animate-fade-in-up">
+          <div className="bg-gradient-to-r from-gray-50 to-white p-6 border-b border-gray-200">
+            <div className="flex justify-between items-center">
+              <div>
+                <h2 className="text-2xl font-bold text-gray-900 mb-1">
+                  Shopping Cart
+                </h2>
+                <p className="text-sm text-gray-600">{cartItems.length} {cartItems.length === 1 ? 'item' : 'items'} in your cart</p>
+              </div>
+              <Button 
+                asChild 
+                variant="outline"
+                className="hover:bg-[#ff6a00] hover:text-white hover:border-[#ff6a00] transition-all group"
+              >
+                <Link href="/" className="flex items-center gap-2">
+                  <MoveLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
+                  <span>Continue Shopping</span>
+                </Link>
+              </Button>
+            </div>
           </div>
+          
+          <div className="overflow-x-auto">
           <Table>
             <TableHeader>
               <TableRow>
@@ -90,38 +101,37 @@ export default function CartItems({ cartItems }:any) {
                       </TableCell>
 
                       <TableCell className="hidden md:table-cell">
-                        <div className=" rounded-xl border border-gray-400 flex gap-3 items-center ">
+                        <div className="inline-flex items-center rounded-lg border-2 border-gray-200 bg-gray-50 overflow-hidden hover:border-[#ff6a00] transition-all">
                           <button
                             onClick={() => handleQtyDecrement(item.id)}
-                            className="border-r border-gray-400 py-2 px-4"
+                            className="px-3 py-2 hover:bg-[#ff6a00] hover:text-white transition-all group"
                           >
-                            <Minus className="w-4 h-4" />
+                            <Minus className="w-4 h-4 group-hover:scale-110 transition-transform" />
                           </button>
-                          <p className="flex-grow py-2 px-4">{item.qty}</p>
+                          <p className="px-4 py-2 font-semibold text-gray-900 min-w-[3rem] text-center bg-white">{item.qty}</p>
                           <button
                             onClick={() => handleQtyIncrement(item.id , item.stockQty)}
-                            className="border-l border-gray-400 py-2 px-4"
+                            className="px-3 py-2 hover:bg-[#ff6a00] hover:text-white transition-all group"
                           >
-                            <Plus className="w-4 h-4" />
+                            <Plus className="w-4 h-4 group-hover:scale-110 transition-transform" />
                           </button>
                         </div>
                       </TableCell>
                       <TableCell className="hidden md:table-cell">
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-3">
                           <div className="flex flex-col justify-center">
-                            <h4>
-                              UGX &nbsp;
-                              {formatMoney(
-                                (item.salePrice * item.qty).toFixed(2)
-                              )}
+                            <h4 className="text-lg font-bold text-[#ff6a00]">
+                              UGX {formatMoney((item.salePrice * item.qty).toFixed(2))}
                             </h4>
-                            <p className="text-[10px] text-gray-300">
-                              (UGX &nbsp; {formatMoney(+item.salePrice)}x{" "}
-                              {item.qty})
+                            <p className="text-xs text-gray-500">
+                              UGX {formatMoney(+item.salePrice)} × {item.qty}
                             </p>
                           </div>
-                          <button onClick={() => handleCartItemDelete(item.id)}>
-                            <Trash2 className="text-red-600 w-4 h-4" />
+                          <button 
+                            onClick={() => handleCartItemDelete(item.id)}
+                            className="p-2 rounded-lg hover:bg-red-50 transition-all group"
+                          >
+                            <Trash2 className="text-red-600 w-5 h-5 group-hover:scale-110 transition-transform" />
                           </button>
                         </div>
                       </TableCell>
@@ -130,7 +140,8 @@ export default function CartItems({ cartItems }:any) {
                 })}
             </TableBody>
           </Table>
-        </>
+          </div>
+        </div>
       )}
     </div>
   );
