@@ -1,8 +1,8 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
+import CustomImage from "../ui/CustomImage";
 import useEmblaCarousel from "embla-carousel-react";
 import { ChevronLeft, ChevronRight, ArrowRight } from "lucide-react";
 import { Banner } from "@/types";
@@ -89,7 +89,7 @@ export default function HomeBanner({ banners, topDeals }: HomeBannerProps) {
         {/* Left Side Banner */}
         <Link href="/category-d" className="w-1/4">
           <div className="relative h-full overflow-hidden rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-all duration-300">
-            <Image
+            <CustomImage
               placeholder="blur"
               blurDataURL={DEFAULT_BLUR}
               src="https://img.ltwebstatic.com/images3_ccc/2024/08/28/32/1724814607d0aea17ca9b86f4fc4e69c679012a7cd.webp"
@@ -112,7 +112,7 @@ export default function HomeBanner({ banners, topDeals }: HomeBannerProps) {
                   index === currentSlide ? "opacity-100 z-10" : "opacity-0 z-0"
                 }`}
               >
-                <Image
+                <CustomImage
                   placeholder="blur"
                   blurDataURL={DEFAULT_BLUR}
                   src={item.imageUrl ?? DEFAULT_IMAGE}
@@ -182,7 +182,7 @@ export default function HomeBanner({ banners, topDeals }: HomeBannerProps) {
                 className="group relative overflow-hidden rounded-lg border border-gray-200 bg-gray-50 hover:shadow-md transition-all duration-300"
               >
                 <div className="aspect-square relative">
-                  <Image
+                  <CustomImage
                     src={deal.imageUrl}
                     alt={deal.slug}
                     fill
@@ -219,7 +219,7 @@ export default function HomeBanner({ banners, topDeals }: HomeBannerProps) {
                   index === currentSlide ? "opacity-100 z-10" : "opacity-0 z-0"
                 }`}
               >
-                <Image
+                <CustomImage
                   placeholder="blur"
                   blurDataURL={DEFAULT_BLUR}
                   src={item.imageUrl ?? DEFAULT_IMAGE}
@@ -281,7 +281,7 @@ export default function HomeBanner({ banners, topDeals }: HomeBannerProps) {
                         className="group relative overflow-hidden rounded-lg border border-gray-200 bg-gray-50 hover:shadow-md transition-all duration-300"
                       >
                         <div className="aspect-square relative">
-                          <Image
+                          <CustomImage
                             src={deal.imageUrl}
                             alt={deal.slug}
                             fill

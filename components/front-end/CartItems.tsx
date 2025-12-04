@@ -9,7 +9,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import Image from "next/image";
 import { useDispatch } from "react-redux";
 import {
   decrementQty,
@@ -21,6 +20,7 @@ import toast from "react-hot-toast";
 import { Button } from "../ui/button";
 import Link from "next/link";
 import { formatMoney } from "@/lib/formatMoney";
+import CustomImage from "../ui/CustomImage";
 
 
 export default function CartItems({ cartItems }:any) {
@@ -72,7 +72,7 @@ export default function CartItems({ cartItems }:any) {
                   return (
                     <TableRow key={item.id}>
                       <TableCell className="hidden sm:table-cell">
-                        <Image
+                        <CustomImage
                           alt={item.title}
                           className="aspect-square rounded-md object-cover"
                           height="64"

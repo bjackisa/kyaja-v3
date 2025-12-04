@@ -1,12 +1,12 @@
-import Image from "next/image";
 import Link from "next/link";
 import React from "react";
+import CustomImage from "../ui/CustomImage";
 import { Button } from "../ui/button";
 
 export default function EmptyCart() {
   return (
     <div className=" flex items-center flex-col justify-center ">
-      <Image
+      <CustomImage
         src="/empty-cart.jpg"
         className="w-72 h-auto"
         alt="empty cart kyaja.com"

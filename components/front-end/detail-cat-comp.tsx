@@ -1,6 +1,6 @@
 import { DEFAULT_BLUR, DEFAULT_IMAGE } from "@/lib/lazyLoading";
-import Image from "next/image";
 import Link from "next/link";
+import CustomImage from "../ui/CustomImage";
 
 interface CategoryCardProps {
   title: string;
@@ -14,7 +14,7 @@ export function CategoryCard({ title, image, slug }: CategoryCardProps) {
       href={`/c/${slug}`}
       className="relative block aspect-[4/3] rounded-lg overflow-hidden group"
     >
-      <Image
+      <CustomImage
         src={image || DEFAULT_IMAGE}
         alt={title}
         fill

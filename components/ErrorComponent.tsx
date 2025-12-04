@@ -1,8 +1,8 @@
 'use client'
 import logo from "../public/logo.svg";
-import Image from "next/image"
 import Link from "next/link"
 import { useRouter } from "next/navigation";
+import CustomImage from "./ui/CustomImage";
 
  
 export default function ErrorComponent() {
@@ -24,7 +24,7 @@ export default function ErrorComponent() {
     <a className="block text-teal-600" href="#">
       <span className="sr-only">Home</span>
       <Link  className="flex items-center lg:gap-0 md:gap-0 gap-2"href="/">
-          <Image src={logo} alt="kyaja logo" className="lg:w-[4rem] w-[3rem] h-[3rem] lg:h-[4rem] mt-4" />
+          <CustomImage src={logo} alt="kyaja logo" className="lg:w-[4rem] w-[3rem] h-[3rem] lg:h-[4rem] mt-4" />
           <div className="flex flex-col">
             <span className="font-black text-xl uppercase text-[#282828] lg:block md:block hidden">Kyaja</span>
           </div>
