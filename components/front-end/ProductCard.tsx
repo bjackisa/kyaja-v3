@@ -84,7 +84,7 @@ export default function ProductCard({
         className="relative aspect-square overflow-hidden bg-gray-50"
       >
         <Image
-          src={product.imageUrl ?? DEFAULT_IMAGE}
+          src={product.imageUrl || DEFAULT_IMAGE}
           alt={product.title}
           layout="fill"
           objectFit="cover"
