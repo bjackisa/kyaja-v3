@@ -172,26 +172,32 @@ export default function Sidebar({ session }: any) {
     link.roles.includes(role)
   );
   return (
-    <div className="hidden border-r bg-muted/40 md:block">
+    <div className="hidden md:block relative bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 border-r border-slate-700/50">
       <div className="flex h-full max-h-screen flex-col gap-2">
-        <div className="flex flex-shrink-0 h-14 items-center border-b px-4 lg:h-[60px] lg:px-6">
-          <Link href="/" className="flex items-center gap-2 font-semibold">
-            <Image
-              src="/logo.svg"
-              alt="kyaja logo"
-              className="w-14 h-14 mt-2"
-              width={300}
-              height={300}
-            />
-            <span className="">Kyaja</span>
+        {/* Header with Logo */}
+        <div className="flex flex-shrink-0 h-16 items-center px-4 lg:px-6 border-b border-slate-700/50 bg-slate-900/50 backdrop-blur-sm">
+          <Link href="/" className="flex items-center gap-3 font-bold group">
+            <div className="relative">
+              <Image
+                src="/logo.svg"
+                alt="kyaja logo"
+                className="w-10 h-10 transition-transform group-hover:scale-110 group-hover:rotate-12"
+                width={300}
+                height={300}
+              />
+              <div className="absolute inset-0 bg-gradient-to-r from-[#ff6a00] to-[#ff4747] opacity-0 group-hover:opacity-20 rounded-full blur-xl transition-opacity" />
+            </div>
+            <span className="text-xl bg-gradient-to-r from-[#ff6a00] to-[#ff4747] bg-clip-text text-transparent">Kyaja Admin</span>
           </Link>
-          <Button variant="outline" size="icon" className="ml-auto h-8 w-8">
+          <Button variant="ghost" size="icon" className="ml-auto h-9 w-9 hover:bg-slate-700/50 text-slate-300 hover:text-[#ff6a00] transition-all hover:scale-110 relative">
             <Bell className="h-4 w-4" />
+            <span className="absolute top-1 right-1 w-2 h-2 bg-[#ff4747] rounded-full animate-pulse" />
             <span className="sr-only">Toggle notifications</span>
           </Button>
         </div>
-        <div className="flex-1">
-          <nav className="grid items-start px-2 text-sm font-medium lg:px-4">
+        {/* Navigation */}
+        <div className="flex-1 overflow-y-auto scrollbar-hide py-4">
+          <nav className="grid items-start px-3 text-sm font-medium lg:px-4 gap-1">
             {filteredSidebarLinks.map((item: any, i: any) => {
               const Icon = item.icon;
               const isHrefIncluded =
@@ -205,8 +211,8 @@ export default function Sidebar({ session }: any) {
                       <CollapsibleTrigger
                         onClick={() => setIsOpen(!isOpen)}
                         className={cn(
-                          "flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary  w-full",
-                          isHrefIncluded && "bg-muted text-primary"
+                          "flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-300 transition-all hover:bg-slate-700/50 hover:text-[#ff6a00] w-full group",
+                          isHrefIncluded && "bg-gradient-to-r from-[#ff6a00]/10 to-[#ff4747]/10 text-[#ff6a00] border-l-2 border-[#ff6a00]"
                         )}
                       >
                         <Icon className="h-4 w-4" />
@@ -243,12 +249,18 @@ export default function Sidebar({ session }: any) {
                     <Link
                       href={item.href ?? "#"}
                       className={cn(
-                        "flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary",
-                        pathname === item.href && "bg-muted text-primary"
+                        "flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-300 transition-all hover:bg-slate-700/50 hover:text-[#ff6a00] group relative overflow-hidden",
+                        pathname === item.href && "bg-gradient-to-r from-[#ff6a00]/10 to-[#ff4747]/10 text-[#ff6a00] border-l-2 border-[#ff6a00] shadow-lg shadow-[#ff6a00]/20"
                       )}
                     >
-                      <Icon className="h-4 w-4" />
-                      {item.title}
+                      <Icon className={cn(
+                        "h-4 w-4 transition-transform group-hover:scale-110",
+                        pathname === item.href && "text-[#ff6a00]"
+                      )} />
+                      <span className="font-medium">{item.title}</span>
+                      {pathname === item.href && (
+                        <div className="absolute inset-0 bg-gradient-to-r from-[#ff6a00]/5 to-transparent animate-shimmer" />
+                      )}
                     </Link>
                   )}
                 </div>
@@ -257,9 +269,10 @@ export default function Sidebar({ session }: any) {
           </nav>
         </div>
 
-        <div className="mt-auto p-4">
-          <Button size="sm" className="w-full">
-            <Power className="h-4 w-4 mr-2" />
+        {/* Logout Button */}
+        <div className="mt-auto p-4 border-t border-slate-700/50">
+          <Button size="sm" className="w-full bg-gradient-to-r from-[#ff6a00] to-[#ff4747] hover:from-[#ff8534] hover:to-[#ff6a00] text-white font-semibold shadow-lg hover:shadow-xl transition-all hover:scale-105 group">
+            <Power className="h-4 w-4 mr-2 group-hover:rotate-180 transition-transform duration-300" />
             Logout
           </Button>
         </div>

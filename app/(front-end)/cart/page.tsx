@@ -27,16 +27,27 @@ export default function Cart() {
 
   // console.log(subTotal);
   return (
-    <div className="md:pt-[3rem] pt-[3.8rem] lg:pt-[4rem] px-3 lg:px-[5rem] md:px-[3rem] pb-4">
-      <Breadcrumb />
-      {cartItems.length > 0 ? (
-        <div className="grid grid-cols-12 gap-6 md:gap-14 ">
-          <CartItems cartItems={cartItems} />
-          <CartSubTotalCard subTotal={subTotal} />
-        </div>
-      ) : (
-        <EmptyCart />
-      )}
+    <div className="md:pt-[3rem] pt-[3.8rem] lg:pt-[4rem] px-3 lg:px-[5rem] md:px-[3rem] pb-8 min-h-screen">
+      <div className="animate-fade-in-up">
+        <Breadcrumb />
+        
+        {/* Cart Header */}
+        {cartItems.length > 0 && (
+          <div className="mt-6 mb-8">
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">Shopping Cart</h1>
+            <p className="text-gray-600">You have {cartItems.length} {cartItems.length === 1 ? 'item' : 'items'} in your cart</p>
+          </div>
+        )}
+        
+        {cartItems.length > 0 ? (
+          <div className="grid grid-cols-12 gap-6 md:gap-8">
+            <CartItems cartItems={cartItems} />
+            <CartSubTotalCard subTotal={subTotal} />
+          </div>
+        ) : (
+          <EmptyCart />
+        )}
+      </div>
     </div>
   );
 }

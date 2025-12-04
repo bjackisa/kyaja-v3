@@ -3,6 +3,7 @@ import "../globals.css";
 import SubNav from "@/components/SubNav";
 import Footer from "@/components/Footer";
 import BottomTabs from "@/components/front-end/bottom-tabs";
+import SeasonalPopup from "@/components/SeasonalPopup";
 
 const geistSans = localFont({
   src: "../fonts/GeistVF.woff",
@@ -22,6 +23,7 @@ export default async function FrontLayout({
 }>) {
   return (
     <div className={`${geistSans.variable} ${geistMono.variable} antialiased relative lg:px-0 md:px-0 px-0 min-h-screen bg-[#f5f5f5]`}>
+      <SeasonalPopup />
       <div className="sticky top-0 h-[5vh] z-30">
         <SubNav />
       </div>

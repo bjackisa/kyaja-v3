@@ -29,8 +29,18 @@ async function DashboardContent() {
   }
 
   return (
-    <div className="space-y-8 p-8">
-      <h1 className="text-3xl font-bold tracking-tight">Dashboard Overview</h1>
+    <div className="space-y-6 p-4 md:p-8 animate-fade-in-up">
+      {/* Header with Gradient */}
+      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-[#ff6a00] via-[#ff4747] to-[#ff6a00] p-8 shadow-2xl">
+        <div className="absolute inset-0 bg-black/10" />
+        <div className="relative z-10">
+          <h1 className="text-4xl font-extrabold text-white mb-2 animate-fade-in-down">Dashboard Overview</h1>
+          <p className="text-white/90 text-sm">Welcome back! Here's what's happening with your store today.</p>
+        </div>
+        {/* Decorative Elements */}
+        <div className="absolute -right-10 -top-10 w-40 h-40 bg-white/10 rounded-full blur-3xl" />
+        <div className="absolute -left-10 -bottom-10 w-40 h-40 bg-white/10 rounded-full blur-3xl" />
+      </div>
       
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
         <OrderStatusCard
