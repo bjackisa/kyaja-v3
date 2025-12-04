@@ -1,8 +1,8 @@
 "use client";
 import { X } from 'lucide-react';
-import Image from 'next/image';
 import React from 'react';
 import { CardDescription, CardHeader, CardTitle } from '../ui/card';
+import CustomImage from '../ui/CustomImage';
 import { UploadButton } from '@/lib/uploadthing';
 
 export default function ImageUploader({ label, imageUrls, setImageUrls, endpoint }:any) {
@@ -24,7 +24,7 @@ export default function ImageUploader({ label, imageUrls, setImageUrls, endpoint
         {imageUrls && imageUrls.length > 0 ? (
           <>
             <div className="relative aspect-square w-full max-w-[500px] mx-auto">
-              <Image
+              <CustomImage
                 alt={label}
                 className="rounded-lg object-cover shadow-md hover:shadow-lg transition-shadow"
                 height={500}
@@ -44,7 +44,7 @@ export default function ImageUploader({ label, imageUrls, setImageUrls, endpoint
             <div className="grid grid-cols-3 gap-4">
               {imageUrls.slice(1, 4).map((imgUrl:string, index:any) => (
                 <div key={index} className="relative aspect-square">
-                  <Image
+                  <CustomImage
                     alt={`${label} thumbnail ${index + 2}`}
                     className="rounded-lg object-cover shadow-md hover:shadow-lg transition-shadow"
                     height={500}
@@ -65,7 +65,7 @@ export default function ImageUploader({ label, imageUrls, setImageUrls, endpoint
         ) : (
           <>
             <div className="relative aspect-square w-full max-w-[500px] mx-auto">
-              <Image
+              <CustomImage
                 alt="Main placeholder"
                 className="rounded-lg object-cover bg-gray-100"
                 height={500}
@@ -78,7 +78,7 @@ export default function ImageUploader({ label, imageUrls, setImageUrls, endpoint
             <div className="grid grid-cols-3 gap-4">
               {[1, 2, 3].map((_, index) => (
                 <div key={index} className="relative aspect-square">
-                  <Image
+                  <CustomImage
                     alt={`Placeholder ${index + 1}`}
                     className="rounded-lg object-cover bg-gray-100"
                     height={500}

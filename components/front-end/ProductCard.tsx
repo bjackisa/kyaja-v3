@@ -1,12 +1,12 @@
 "use client";
 import Link from "next/link";
-import Image from "next/image";
 import { formatMoney } from "@/lib/formatMoney";
 import type { Product } from "@/actions/product-server";
 import { useRecentlyViewedStore } from "@/hooks/store/recently-viewed";
 import { DEFAULT_BLUR, DEFAULT_IMAGE } from "@/lib/lazyLoading";
 import { useDispatch, useSelector } from "react-redux";
 import { useState } from "react";
+import CustomImage from "../ui/CustomImage";
 import { ShoppingCart } from "lucide-react";
 import toast from "react-hot-toast";
 import { addToCart } from "@/redux/slices/cartSlice";
@@ -83,8 +83,8 @@ export default function ProductCard({
         href={`/p/${product.slug}`}
         className="relative aspect-square overflow-hidden bg-gray-50"
       >
-        <Image
-          src={product.imageUrl ?? DEFAULT_IMAGE}
+        <CustomImage
+          src={product.imageUrl || DEFAULT_IMAGE}
           alt={product.title}
           layout="fill"
           objectFit="cover"

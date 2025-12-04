@@ -1,6 +1,6 @@
-import Image from 'next/image';
 import Link from 'next/link';
 import React, { useEffect } from 'react';
+import CustomImage from '../ui/CustomImage';
 import { useInView } from 'react-intersection-observer';
 import { Loader2 } from 'lucide-react';
 import { useDepartmentCategories } from '@/hooks/use-categories';
@@ -43,7 +43,7 @@ const DetailedCategories: React.FC<{ departments: any }> = ({ departments }) => 
                   className="flex flex-col items-center cursor-pointer"
                 >
                   <div className="w-full aspect-square mb-2 overflow-hidden rounded">
-                    <Image
+                    <CustomImage
                       placeholder="blur"
                       blurDataURL={DEFAULT_BLUR}
                       src={imageUrl}

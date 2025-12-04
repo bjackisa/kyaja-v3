@@ -6,8 +6,8 @@ import "swiper/css/navigation";
 import "swiper/css/pagination";
 import { Navigation, Pagination, Autoplay } from "swiper/modules";
 import Link from "next/link";
-import Image from "next/image";
 import { Banner } from "@/types";
+import CustomImage from "./ui/CustomImage";
 type HomeCarouselProps = {
   slides: Banner[];
 };
@@ -48,7 +48,7 @@ export default function HomeCarousel({ slides }: HomeCarouselProps) {
       {slidesData?.map((slide, index) => (
         <SwiperSlide key={index}>
           <Link href={`/banner/${slide.id}`}>
-            <Image
+            <CustomImage
               src={
                 slide?.imageUrl?.trim() !== ""
                   ? slide.imageUrl
