@@ -1,4 +1,4 @@
-# Kyaja-Typescript - Ecommerce Application
+# Kyaja-Application
 
 This is a full-stack ecommerce application built with Next.js, TypeScript, Prisma, and Tailwind CSS. It features a complete shopping experience, from browsing products to checkout and order management.
 
