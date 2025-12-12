@@ -5,28 +5,29 @@ export default async function sitemap() {
   const [products] = await Promise.all([
     getAllProducts(),
   ]);
-  const productUrl = products.map((product) => {
+  const safeBaseUrl = baseUrl ?? "";
+  const productUrl = (products ?? []).map((product) => {
     return {
-      url: `${baseUrl}/p/${product.slug}`,
+      url: `${safeBaseUrl}/p/${product.slug}`,
       lastModified: new Date(),
     };
   });
 
   return [
     {
-      url: baseUrl,
+      url: safeBaseUrl,
       lastModified: new Date(),
       changeFrequency: "yearly",
       priority: 1,
     },
     {
-      url: baseUrl,
+      url: safeBaseUrl,
       lastModified: new Date(),
       changeFrequency: "monthly",
       priority: 0.8,
     },
     {
-      url: baseUrl,
+      url: safeBaseUrl,
       lastModified: new Date(),
       changeFrequency: "weekly",
       priority: 0.5,

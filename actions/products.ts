@@ -36,7 +36,7 @@ export async function getAllProducts() {
     return filterPrdts;
   } catch (error) {
     console.log(error);
-    return null;
+    return [];
   }
 }
 export async function searchFetch() {
@@ -56,7 +56,7 @@ export async function searchFetch() {
        return products;
   } catch (error) {
     console.log(error);
-    return null;
+    return [];
   }
 }
 
@@ -74,7 +74,7 @@ export async function getProducts() {
     return products;
   } catch (error) {
     console.log(error);
-    return null;
+    return [];
   }
 }
 
