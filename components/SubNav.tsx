@@ -11,6 +11,12 @@ import {
   Menu,
   Phone,
   Package,
+  Gift,
+  Zap,
+  CreditCard,
+  BadgeCheck,
+  Sparkles,
+  type LucideIcon,
 } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -41,7 +47,7 @@ type SpotlightProduct = {
 type PromoItem =
   | {
       type: "message";
-      icon: string;
+      icon: LucideIcon;
       title: string;
       subtitle?: string;
       href?: string;
@@ -49,14 +55,14 @@ type PromoItem =
     }
   | {
       type: "spotlight";
-      icon: string;
+      icon: LucideIcon;
       badge?: string;
     };
 
 const BASE_PROMO_ITEMS: PromoItem[] = [
   {
     type: "message",
-    icon: "🎁",
+    icon: Gift,
     title: "Gift Hampers Available",
     subtitle: "A Gift Today, A Memory Forever",
     href: "/d/gift-hampers",
@@ -64,26 +70,26 @@ const BASE_PROMO_ITEMS: PromoItem[] = [
   },
   {
     type: "message",
-    icon: "⚡",
+    icon: Zap,
     title: "Expedited Delivery",
     subtitle: "Greater Kampala delivery in 3 hours",
     badge: "FAST",
   },
   {
     type: "message",
-    icon: "💳",
+    icon: CreditCard,
     title: "Pay on Delivery",
     subtitle: "MTN Money / Airtel Money / Cash",
   },
   {
     type: "message",
-    icon: "✅",
+    icon: BadgeCheck,
     title: "Genuine Products Only",
     subtitle: "Quality checked before delivery",
   },
   {
     type: "spotlight",
-    icon: "✨",
+    icon: Sparkles,
     badge: "DEAL",
   },
 ];
@@ -199,7 +205,7 @@ export default function ModernHeader() {
         </div>
 
         <div className="max-w-screen-2xl mx-auto relative py-2">
-          <div className="relative h-8 sm:h-9">
+          <div className="relative min-h-10 sm:min-h-9">
             {promoItems.map((item, index) => {
               const isActive = index === currentPromoIndex;
 
@@ -228,8 +234,8 @@ export default function ModernHeader() {
                     className={baseClass}
                     style={{ pointerEvents: isActive ? "auto" : "none" }}
                   >
-                    <div className="group flex items-center gap-2 sm:gap-3 rounded-full bg-white/15 backdrop-blur-md px-3 py-1.5 ring-1 ring-white/20 hover:bg-white/20 transition-colors max-w-[95%]">
-                      <span className="text-base sm:text-lg">{item.icon}</span>
+                    <div className="group flex items-center gap-2 sm:gap-3 rounded-full bg-white/15 backdrop-blur-md px-3 py-2 ring-1 ring-white/20 hover:bg-white/20 transition-colors w-[95%] sm:w-auto sm:max-w-[95%]">
+                      <item.icon className="h-4 w-4 sm:h-[18px] sm:w-[18px]" />
                       <div className="flex items-center gap-2 min-w-0">
                         <span className="hidden sm:inline text-[11px] font-extrabold tracking-wider uppercase bg-black/25 px-2 py-0.5 rounded-full">
                           {item.badge ?? "SPOTLIGHT"}
@@ -263,8 +269,8 @@ export default function ModernHeader() {
                   className={baseClass}
                   style={{ pointerEvents: isActive && item.href ? "auto" : "none" }}
                 >
-                  <div className="group flex items-center gap-2 sm:gap-3 rounded-full bg-white/15 backdrop-blur-md px-3 py-1.5 ring-1 ring-white/20 hover:bg-white/20 transition-colors max-w-[95%]">
-                    <span className="text-base sm:text-lg">{item.icon}</span>
+                  <div className="group flex items-center gap-2 sm:gap-3 rounded-full bg-white/15 backdrop-blur-md px-3 py-2 ring-1 ring-white/20 hover:bg-white/20 transition-colors w-[95%] sm:w-auto sm:max-w-[95%]">
+                    <item.icon className="h-4 w-4 sm:h-[18px] sm:w-[18px]" />
                     <div className="min-w-0">
                       <div className="flex items-center gap-2">
                         <span className="text-[11px] sm:text-xs font-extrabold tracking-wide uppercase truncate">
@@ -306,12 +312,6 @@ export default function ModernHeader() {
                 aria-label={`Go to promotion ${index + 1}`}
               />
             ))}
-          </div>
-
-          <div className="hidden sm:flex justify-center mt-0.5">
-            <span className="text-[10px] text-white/80 font-semibold">
-              {isPromoPaused ? "Paused" : "Hover to pause"}
-            </span>
           </div>
         </div>
       </div>
