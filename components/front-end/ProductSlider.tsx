@@ -21,43 +21,45 @@ export default function ProductSlider({ data }: ProductSliderProps) {
   }
 
   return (
-    <div className="prdt-image space-y-3">
-      <Swiper
-        style={
-          {
-            "--swiper-navigation-color": "#fff",
-            "--swiper-pagination-color": "#fff",
-          } as any
-        }
-        loop={true}
-        spaceBetween={10}
-        navigation={true}
-        thumbs={{ swiper: thumbsSwiper.current }}
-        autoplay={{
-          delay: 3000,
-          disableOnInteraction: false,
-        }}
-        modules={[FreeMode, Navigation, Thumbs, Autoplay]}
-        className="mySwiper2 h-full rounded-xl overflow-hidden"
-      >
-        {data.map((image: any, i) => {
-          return (
-            <SwiperSlide key={i}>
-              <div className="relative aspect-square w-full">
-                <CustomImage
-                  src={image ?? DEFAULT_IMAGE}
-                  alt={`Product Image`}
-                  className="object-contain"
-                  fill
-                  sizes="(max-width: 768px) 90vw, 420px"
-                  placeholder="blur"
-                  blurDataURL={DEFAULT_BLUR}
-                />
-              </div>
-            </SwiperSlide>
-          );
-        })}
-      </Swiper>
+    <div className="prdt-image space-y-2">
+      <div className="relative w-full aspect-square overflow-hidden rounded-xl">
+        <Swiper
+          style={
+            {
+              "--swiper-navigation-color": "#fff",
+              "--swiper-pagination-color": "#fff",
+            } as any
+          }
+          loop={true}
+          spaceBetween={10}
+          navigation={true}
+          thumbs={{ swiper: thumbsSwiper.current }}
+          autoplay={{
+            delay: 3000,
+            disableOnInteraction: false,
+          }}
+          modules={[FreeMode, Navigation, Thumbs, Autoplay]}
+          className="mySwiper2 !h-full !w-full"
+        >
+          {data.map((image: any, i) => {
+            return (
+              <SwiperSlide key={i}>
+                <div className="relative aspect-square w-full">
+                  <CustomImage
+                    src={image ?? DEFAULT_IMAGE}
+                    alt={`Product Image`}
+                    className="object-contain"
+                    fill
+                    sizes="(max-width: 768px) 90vw, 420px"
+                    placeholder="blur"
+                    blurDataURL={DEFAULT_BLUR}
+                  />
+                </div>
+              </SwiperSlide>
+            );
+          })}
+        </Swiper>
+      </div>
       <Swiper
         onSwiper={(swiper) => (thumbsSwiper.current = swiper) as any}
         loop={false}
@@ -74,7 +76,7 @@ export default function ProductSlider({ data }: ProductSliderProps) {
             slidesPerView: 4,
           },
         }}
-        className="mySwiper"
+        className="mySwiper !h-20 !w-full overflow-hidden"
       >
         {data.map((image: any, i) => {
           return (
