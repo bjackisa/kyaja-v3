@@ -109,6 +109,8 @@ To run this project, you will need to create a `.env` file in the root of your p
 - `DATABASE_URL`: The connection string for your database.
 - `NEXTAUTH_URL`: The URL of your application.
 - `NEXTAUTH_SECRET`: A secret key for NextAuth.js.
+- 
+{{ others are UploadThing Credentials }}
 
 For a full list of environment variables, see the `.env.example` file.
 
