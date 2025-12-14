@@ -26,11 +26,76 @@ import CategoryNav from "./ShopHeader";
 import { MobileNavBar } from "./MobileNavBar";
 import UserAvatar from "./UserAvatar";
 
-const PROMO_MESSAGES = [
-  "🎁 A Gift Today, A Memory Forever!! Share a Gift Hamper from Kyaja",
-  "⚡ Expedited Delivery within Greater Kampala. Get your items in 3 hours",
-  "🔥 Black November Deals!! Up to 60% off Genuine Products this Month!!"
+import { formatMoney } from "@/lib/formatMoney";
+
+type SpotlightProduct = {
+  title: string;
+  slug: string;
+  imageUrl: string | null;
+  productPrice: number;
+  salePrice: number;
+  isDiscount: boolean;
+  discount: number | null;
+};
+
+type PromoItem =
+  | {
+      type: "message";
+      icon: string;
+      title: string;
+      subtitle?: string;
+      href?: string;
+      badge?: string;
+    }
+  | {
+      type: "spotlight";
+      icon: string;
+      badge?: string;
+    };
+
+const BASE_PROMO_ITEMS: PromoItem[] = [
+  {
+    type: "message",
+    icon: "🎁",
+    title: "Gift Hampers Available",
+    subtitle: "A Gift Today, A Memory Forever",
+    href: "/d/gift-hampers",
+    badge: "HOT",
+  },
+  {
+    type: "message",
+    icon: "⚡",
+    title: "Expedited Delivery",
+    subtitle: "Greater Kampala delivery in 3 hours",
+    badge: "FAST",
+  },
+  {
+    type: "message",
+    icon: "💳",
+    title: "Pay on Delivery",
+    subtitle: "MTN Money / Airtel Money / Cash",
+  },
+  {
+    type: "message",
+    icon: "✅",
+    title: "Genuine Products Only",
+    subtitle: "Quality checked before delivery",
+  },
+  {
+    type: "spotlight",
+    icon: "✨",
+    badge: "DEAL",
+  },
 ];
+
+function shuffle<T>(items: T[]): T[] {
+  const copy = [...items];
+  for (let i = copy.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [copy[i], copy[j]] = [copy[j], copy[i]];
+  }
+  return copy;
+}
 
 export default function ModernHeader() {
   const { departments, isLoading } = useFetchDepartments();
@@ -45,6 +110,11 @@ export default function ModernHeader() {
   const [profile, setProfile] = useState(null);
   const [isScrolled, setIsScrolled] = useState(false);
   const [currentPromoIndex, setCurrentPromoIndex] = useState(0);
+  const [promoItems, setPromoItems] = useState<PromoItem[]>(() =>
+    shuffle(BASE_PROMO_ITEMS)
+  );
+  const [isPromoPaused, setIsPromoPaused] = useState(false);
+  const [spotlight, setSpotlight] = useState<SpotlightProduct | null>(null);
   
   const user = Session?.user;
   const profileImage = profile?.image || "https://utfs.io/f/8b034fb4-1f45-425a-8c57-a7a68835311f-2558r.png";
@@ -59,8 +129,35 @@ export default function ModernHeader() {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setCurrentPromoIndex((prev) => (prev + 1) % PROMO_MESSAGES.length);
+      if (isPromoPaused) return;
+      setCurrentPromoIndex((prev) => (prev + 1) % promoItems.length);
     }, 8000);
+    return () => clearInterval(interval);
+  }, [isPromoPaused, promoItems.length]);
+
+  useEffect(() => {
+    const refresh = async () => {
+      try {
+        const res = await fetch("/api/products/spotlight", { cache: "no-store" });
+        if (!res.ok) return;
+        const data = (await res.json()) as SpotlightProduct | null;
+        setSpotlight(data);
+      } catch {
+        // ignore
+      }
+    };
+
+    refresh();
+    const interval = setInterval(refresh, 60_000);
+    return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    // Occasionally reshuffle so it doesn't feel like a fixed loop.
+    const interval = setInterval(() => {
+      setPromoItems((prev) => shuffle(prev));
+      setCurrentPromoIndex(0);
+    }, 1000 * 60 * 5);
     return () => clearInterval(interval);
   }, []);
 
@@ -91,47 +188,131 @@ export default function ModernHeader() {
 
   return (
     <>
-      {/* Rotating Promotional Bar - AliExpress Style */}
-      <div className="bg-gradient-to-r from-[#ff6a00] via-[#ff4747] to-[#ff6a00] text-white py-2.5 px-4 overflow-hidden relative">
-        <div className="max-w-screen-2xl mx-auto relative h-5">
-          {PROMO_MESSAGES.map((message, index) => (
-            <div
-              key={index}
-              className={`text-center text-xs font-semibold transition-all duration-700 absolute inset-0 flex items-center justify-center tracking-wide ${
-                index === currentPromoIndex
-                  ? "opacity-100 translate-y-0"
-                  : "opacity-0 translate-y-4"
-              }`}
-              style={{
-                pointerEvents: index === currentPromoIndex ? "auto" : "none",
-              }}
-            >
-              <div className="hidden sm:block whitespace-nowrap uppercase">
-                {message}
-              </div>
-              <div className="sm:hidden w-full overflow-hidden">
-                <div className="animate-scroll-text whitespace-nowrap inline-block uppercase">
-                  {message}
-                </div>
-              </div>
-            </div>
-          ))}
+      <div
+        className="bg-gradient-to-r from-[#ff6a00] via-[#ff4747] to-[#ff6a00] text-white px-3 sm:px-4 overflow-hidden relative"
+        onMouseEnter={() => setIsPromoPaused(true)}
+        onMouseLeave={() => setIsPromoPaused(false)}
+      >
+        <div className="absolute inset-0 opacity-30">
+          <div className="absolute -top-6 -left-10 h-20 w-40 bg-white/20 blur-2xl animate-pulse" />
+          <div className="absolute -bottom-8 right-0 h-20 w-56 bg-black/20 blur-2xl animate-pulse" />
         </div>
-        
-        {/* Promo Navigation Dots - Desktop Only */}
-        <div className="hidden sm:flex absolute bottom-0.5 left-1/2 -translate-x-1/2 gap-1">
-          {PROMO_MESSAGES.map((_, index) => (
-            <button
-              key={index}
-              onClick={() => setCurrentPromoIndex(index)}
-              className={`h-1 rounded-full transition-all ${
-                index === currentPromoIndex
-                  ? "bg-white w-3"
-                  : "bg-white/40 w-1 hover:bg-white/60"
-              }`}
-              aria-label={`Go to promotion ${index + 1}`}
-            />
-          ))}
+
+        <div className="max-w-screen-2xl mx-auto relative py-2">
+          <div className="relative h-8 sm:h-9">
+            {promoItems.map((item, index) => {
+              const isActive = index === currentPromoIndex;
+
+              const baseClass = `absolute inset-0 flex items-center justify-center transition-all duration-700 ease-out ${
+                isActive
+                  ? "opacity-100 translate-y-0 scale-100"
+                  : "opacity-0 translate-y-3 scale-[0.98]"
+              }`;
+
+              if (item.type === "spotlight") {
+                const p = spotlight;
+                const href = p?.slug ? `/p/${p.slug}` : "/deals";
+                const displayPrice =
+                  p && p.salePrice > 0 ? p.salePrice : p?.productPrice;
+                const showDiscount =
+                  !!p && (p.isDiscount || (p.salePrice > 0 && p.salePrice < p.productPrice));
+                const discountPct =
+                  p && p.productPrice > 0 && p.salePrice > 0 && p.salePrice < p.productPrice
+                    ? Math.round(((p.productPrice - p.salePrice) / p.productPrice) * 100)
+                    : p?.discount ?? null;
+
+                return (
+                  <Link
+                    key={index}
+                    href={href}
+                    className={baseClass}
+                    style={{ pointerEvents: isActive ? "auto" : "none" }}
+                  >
+                    <div className="group flex items-center gap-2 sm:gap-3 rounded-full bg-white/15 backdrop-blur-md px-3 py-1.5 ring-1 ring-white/20 hover:bg-white/20 transition-colors max-w-[95%]">
+                      <span className="text-base sm:text-lg">{item.icon}</span>
+                      <div className="flex items-center gap-2 min-w-0">
+                        <span className="hidden sm:inline text-[11px] font-extrabold tracking-wider uppercase bg-black/25 px-2 py-0.5 rounded-full">
+                          {item.badge ?? "SPOTLIGHT"}
+                        </span>
+                        <div className="min-w-0">
+                          <div className="text-[11px] sm:text-xs font-extrabold tracking-wide uppercase truncate">
+                            {p?.title ?? "Deal of the Moment"}
+                          </div>
+                          <div className="text-[10px] sm:text-[11px] text-white/90 font-semibold truncate">
+                            UGX {displayPrice ? formatMoney(displayPrice) : "--"}
+                            {showDiscount && discountPct ? (
+                              <span className="ml-2 text-[10px] font-extrabold bg-white text-[#ff4747] px-1.5 py-0.5 rounded-full">
+                                -{discountPct}%
+                              </span>
+                            ) : null}
+                          </div>
+                        </div>
+                      </div>
+                      <span className="hidden sm:inline text-[10px] font-bold text-white/90 group-hover:text-white transition-colors">
+                        Tap to view
+                      </span>
+                    </div>
+                  </Link>
+                );
+              }
+
+              return (
+                <Link
+                  key={index}
+                  href={item.href ?? "#"}
+                  className={baseClass}
+                  style={{ pointerEvents: isActive && item.href ? "auto" : "none" }}
+                >
+                  <div className="group flex items-center gap-2 sm:gap-3 rounded-full bg-white/15 backdrop-blur-md px-3 py-1.5 ring-1 ring-white/20 hover:bg-white/20 transition-colors max-w-[95%]">
+                    <span className="text-base sm:text-lg">{item.icon}</span>
+                    <div className="min-w-0">
+                      <div className="flex items-center gap-2">
+                        <span className="text-[11px] sm:text-xs font-extrabold tracking-wide uppercase truncate">
+                          {item.title}
+                        </span>
+                        {item.badge ? (
+                          <span className="text-[10px] font-extrabold bg-black/25 px-2 py-0.5 rounded-full">
+                            {item.badge}
+                          </span>
+                        ) : null}
+                      </div>
+                      {item.subtitle ? (
+                        <div className="text-[10px] sm:text-[11px] text-white/90 font-semibold truncate">
+                          {item.subtitle}
+                        </div>
+                      ) : null}
+                    </div>
+                    {item.href ? (
+                      <span className="hidden sm:inline text-[10px] font-bold text-white/90 group-hover:text-white transition-colors">
+                        Explore
+                      </span>
+                    ) : null}
+                  </div>
+                </Link>
+              );
+            })}
+          </div>
+
+          <div className="hidden sm:flex justify-center gap-1.5 mt-1">
+            {promoItems.map((_, index) => (
+              <button
+                key={index}
+                onClick={() => setCurrentPromoIndex(index)}
+                className={`h-1 rounded-full transition-all ${
+                  index === currentPromoIndex
+                    ? "bg-white w-4"
+                    : "bg-white/40 w-1.5 hover:bg-white/60"
+                }`}
+                aria-label={`Go to promotion ${index + 1}`}
+              />
+            ))}
+          </div>
+
+          <div className="hidden sm:flex justify-center mt-0.5">
+            <span className="text-[10px] text-white/80 font-semibold">
+              {isPromoPaused ? "Paused" : "Hover to pause"}
+            </span>
+          </div>
         </div>
       </div>
 
