@@ -12,10 +12,13 @@ import {
   Phone,
   Package,
   Gift,
-  Zap,
   CreditCard,
   BadgeCheck,
   Sparkles,
+  Tag,
+  Truck,
+  ShoppingBag,
+  Users,
   type LucideIcon,
 } from "lucide-react";
 import Link from "next/link";
@@ -59,40 +62,140 @@ type PromoItem =
       badge?: string;
     };
 
-const BASE_PROMO_ITEMS: PromoItem[] = [
-  {
+const SPOTLIGHT_ITEM: PromoItem = {
+  type: "spotlight",
+  icon: Sparkles,
+  badge: "DEAL",
+};
+
+function pickOne<T>(arr: T[]): T {
+  return arr[Math.floor(Math.random() * arr.length)];
+}
+
+function uniquePick<T>(arr: T[], count: number): T[] {
+  const copy = [...arr];
+  const result: T[] = [];
+  while (copy.length && result.length < count) {
+    const idx = Math.floor(Math.random() * copy.length);
+    result.push(copy.splice(idx, 1)[0]);
+  }
+  return result;
+}
+
+function generatePromoItems(
+  categories: any[] | undefined,
+  departments: any[] | undefined
+): PromoItem[] {
+  const safeCategories = (categories ?? []).filter((c) => c?.slug && c?.title);
+  const safeDepartments = (departments ?? []).filter((d) => d?.slug && d?.title);
+
+  const giftRecipients = [
+    "a friend",
+    "your partner",
+    "your mum",
+    "your dad",
+    "your boss",
+    "your sibling",
+    "a colleague",
+  ];
+
+  const giftOccasions = [
+    "a birthday",
+    "an anniversary",
+    "a thank you",
+    "a surprise",
+    "a get-well soon",
+    "a celebration",
+  ];
+
+  const actions = [
+    "Shop",
+    "Explore",
+    "Discover",
+    "Browse",
+    "Find",
+  ];
+
+  const urgency = [
+    "Limited stock",
+    "Trending today",
+    "New picks",
+    "Top rated",
+    "Staff picks",
+  ];
+
+  const items: PromoItem[] = [];
+
+  items.push({
     type: "message",
-    icon: Gift,
-    title: "Gift Hampers Available",
-    subtitle: "A Gift Today, A Memory Forever",
-    href: "/d/gift-hampers",
-    badge: "HOT",
-  },
-  {
-    type: "message",
-    icon: Zap,
+    icon: Truck,
     title: "Expedited Delivery",
     subtitle: "Greater Kampala delivery in 3 hours",
     badge: "FAST",
-  },
-  {
+  });
+
+  items.push({
     type: "message",
     icon: CreditCard,
     title: "Pay on Delivery",
     subtitle: "MTN Money / Airtel Money / Cash",
-  },
-  {
+  });
+
+  items.push({
     type: "message",
     icon: BadgeCheck,
     title: "Genuine Products Only",
     subtitle: "Quality checked before delivery",
-  },
-  {
-    type: "spotlight",
-    icon: Sparkles,
-    badge: "DEAL",
-  },
-];
+  });
+
+  // Gift-hamper persuasion (many permutations)
+  items.push({
+    type: "message",
+    icon: Gift,
+    title: `Send a gift to ${pickOne(giftRecipients)}`,
+    subtitle: `Perfect for ${pickOne(giftOccasions)}`,
+    href: "/d/gift-hampers",
+    badge: "GIFT",
+  });
+
+  // Category spotlights (permutations explode with templates)
+  const sampledCats = uniquePick(safeCategories, Math.min(8, safeCategories.length));
+  for (const cat of sampledCats) {
+    items.push({
+      type: "message",
+      icon: ShoppingBag,
+      title: `${pickOne(actions)} ${cat.title}`,
+      subtitle: `${pickOne(urgency)} in ${cat.title}`,
+      href: `/c/${cat.slug}`,
+      badge: "CATEGORY",
+    });
+  }
+
+  // Department spotlights
+  const sampledDeps = uniquePick(safeDepartments, Math.min(6, safeDepartments.length));
+  for (const dep of sampledDeps) {
+    items.push({
+      type: "message",
+      icon: Users,
+      title: `${pickOne(actions)} ${dep.title}`,
+      subtitle: `Top collections in ${dep.title}`,
+      href: `/d/${dep.slug}`,
+      badge: "DEPT",
+    });
+  }
+
+  // General value + deals framing (keeps it varied)
+  items.push({
+    type: "message",
+    icon: Tag,
+    title: "Daily Deals",
+    subtitle: "Check today’s price drops",
+    href: "/deals",
+    badge: "SAVE",
+  });
+
+  return items;
+}
 
 function shuffle<T>(items: T[]): T[] {
   const copy = [...items];
@@ -117,7 +220,7 @@ export default function ModernHeader() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [currentPromoIndex, setCurrentPromoIndex] = useState(0);
   const [promoItems, setPromoItems] = useState<PromoItem[]>(() =>
-    shuffle(BASE_PROMO_ITEMS)
+    shuffle([SPOTLIGHT_ITEM])
   );
   const [isPromoPaused, setIsPromoPaused] = useState(false);
   const [spotlight, setSpotlight] = useState<SpotlightProduct | null>(null);
@@ -132,6 +235,12 @@ export default function ModernHeader() {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  useEffect(() => {
+    const generated = generatePromoItems(categories as any[], departments as any[]);
+    setPromoItems(shuffle([...generated, SPOTLIGHT_ITEM]));
+    setCurrentPromoIndex(0);
+  }, [categories, departments]);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -234,7 +343,7 @@ export default function ModernHeader() {
                     className={baseClass}
                     style={{ pointerEvents: isActive ? "auto" : "none" }}
                   >
-                    <div className="group flex items-center gap-2 sm:gap-3 rounded-full bg-white/15 backdrop-blur-md px-3 py-2 ring-1 ring-white/20 hover:bg-white/20 transition-colors w-[95%] sm:w-auto sm:max-w-[95%]">
+                    <div className="group flex items-center gap-2 sm:gap-3 rounded-full bg-white/15 backdrop-blur-md px-3 py-2 ring-1 ring-white/20 hover:bg-white/20 transition-colors w-[95%] max-w-[95%]">
                       <item.icon className="h-4 w-4 sm:h-[18px] sm:w-[18px]" />
                       <div className="flex items-center gap-2 min-w-0">
                         <span className="hidden sm:inline text-[11px] font-extrabold tracking-wider uppercase bg-black/25 px-2 py-0.5 rounded-full">
@@ -269,7 +378,7 @@ export default function ModernHeader() {
                   className={baseClass}
                   style={{ pointerEvents: isActive && item.href ? "auto" : "none" }}
                 >
-                  <div className="group flex items-center gap-2 sm:gap-3 rounded-full bg-white/15 backdrop-blur-md px-3 py-2 ring-1 ring-white/20 hover:bg-white/20 transition-colors w-[95%] sm:w-auto sm:max-w-[95%]">
+                  <div className="group flex items-center gap-2 sm:gap-3 rounded-full bg-white/15 backdrop-blur-md px-3 py-2 ring-1 ring-white/20 hover:bg-white/20 transition-colors w-[95%] max-w-[95%]">
                     <item.icon className="h-4 w-4 sm:h-[18px] sm:w-[18px]" />
                     <div className="min-w-0">
                       <div className="flex items-center gap-2">
