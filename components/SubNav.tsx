@@ -234,13 +234,13 @@ export default function ModernHeader() {
                     className={baseClass}
                     style={{ pointerEvents: isActive ? "auto" : "none" }}
                   >
-                    <div className="group flex items-center gap-2 sm:gap-3 rounded-full bg-white/15 backdrop-blur-md px-3 py-2 ring-1 ring-white/20 hover:bg-white/20 transition-colors w-[95%] max-w-screen-2xl">
+                    <div className="group flex items-center justify-center gap-2 sm:gap-3 rounded-full bg-white/15 backdrop-blur-md px-3 py-2 ring-1 ring-white/20 hover:bg-white/20 transition-colors w-[95%] max-w-screen-2xl">
                       <item.icon className="h-4 w-4 sm:h-[18px] sm:w-[18px]" />
-                      <div className="flex items-center gap-2 min-w-0">
+                      <div className="flex items-center justify-center gap-2 min-w-0">
                         <span className="hidden sm:inline text-[11px] font-extrabold tracking-wider uppercase bg-black/25 px-2 py-0.5 rounded-full">
                           {item.badge ?? "SPOTLIGHT"}
                         </span>
-                        <div className="min-w-0">
+                        <div className="min-w-0 text-center">
                           <div className="text-[11px] sm:text-xs font-extrabold tracking-wide uppercase truncate">
                             {p?.title ?? "Deal of the Moment"}
                           </div>
@@ -269,10 +269,10 @@ export default function ModernHeader() {
                   className={baseClass}
                   style={{ pointerEvents: isActive && item.href ? "auto" : "none" }}
                 >
-                  <div className="group flex items-center gap-2 sm:gap-3 rounded-full bg-white/15 backdrop-blur-md px-3 py-2 ring-1 ring-white/20 hover:bg-white/20 transition-colors w-[95%] max-w-screen-2xl">
+                  <div className="group flex items-center justify-center gap-2 sm:gap-3 rounded-full bg-white/15 backdrop-blur-md px-3 py-2 ring-1 ring-white/20 hover:bg-white/20 transition-colors w-[95%] max-w-screen-2xl">
                     <item.icon className="h-4 w-4 sm:h-[18px] sm:w-[18px]" />
-                    <div className="min-w-0">
-                      <div className="flex items-center gap-2">
+                    <div className="min-w-0 text-center">
+                      <div className="flex items-center justify-center gap-2">
                         <span className="text-[11px] sm:text-xs font-extrabold tracking-wide uppercase truncate">
                           {item.title}
                         </span>

@@ -1,119 +1,113 @@
-# Kyaja-Application
+# Kyaja
 
-This is a full-stack ecommerce application built with Next.js, TypeScript, Prisma, and Tailwind CSS. It features a complete shopping experience, from browsing products to checkout and order management.
+Kyaja is a full-stack ecommerce web app built with **Next.js 14 (App Router)**, **TypeScript**, **Prisma**, and **Tailwind CSS**.
 
-## Table of Contents
+It includes:
 
-- [Getting Started](#getting-started)
-  - [Prerequisites](#prerequisites)
-  - [Installation](#installation)
-- [Tech Stack](#tech-stack)
-- [Project Structure](#project-structure)
-- [Available Scripts](#available-scripts)
-- [Environment Variables](#environment-variables)
-- [License](#license)
+- **Storefront**: categories/departments, product pages, search, cart, checkout
+- **Auth**: NextAuth
+- **Admin/Backoffice APIs**: CRUD routes under `app/api/*`
+- **Uploads**: UploadThing
+- **Promo system**: a rotating top promo bar with a dynamic **random product spotlight** (`/api/products/spotlight`)
 
-## Getting Started
+## Tech stack
 
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
+- **Framework**: Next.js
+- **Language**: TypeScript
+- **Database/ORM**: Prisma (configured for MongoDB Atlas in production)
+- **Auth**: NextAuth
+- **Styling**: Tailwind CSS
+- **UI**: Radix + shadcn/ui
+- **State**: Redux Toolkit
+- **Data fetching/caching**: TanStack React Query
+
+## Key routes
+
+- **Home**: `/`
+- **Departments**: `/d/[slug]` (example: `/d/gift-hampers`)
+- **Product detail**: `/p/[slug]`
+- **Search**: `/search?q=...`
+
+## Local development
 
 ### Prerequisites
 
-- Node.js (v18 or later)
-- npm, pnpm, or yarn
-- PostgreSQL or another Prisma-compatible database
+- Node.js **18+**
+- pnpm (recommended)
+- MongoDB Atlas (or another Prisma-supported database configured in `prisma/schema.prisma`)
 
-### Installation
+### Install
 
-1.  **Clone the repository:**
-
-    ```bash
-    git clone https://github.com/your-username/kyaja-typescript.git
-    cd kyaja-typescript
-    ```
-
-2.  **Install dependencies:**
-
-    ```bash
-    pnpm install
-    ```
-
-3.  **Set up the database:**
-
-    - Create a `.env` file in the root of the project.
-    - Add your `DATABASE_URL` to the `.env` file.
-    - Run the following command to migrate the database:
-
-    ```bash
-    pnpm prisma db push
-    ```
-
-4.  **Run the development server:**
-
-    ```bash
-    pnpm dev
-    ```
-
-    Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-## Tech Stack
-
-- **Framework:** [Next.js](https://nextjs.org/)
-- **Language:** [TypeScript](https://www.typescriptlang.org/)
-- **ORM:** [Prisma](https://www.prisma.io/)
-- **Authentication:** [NextAuth.js](https://next-auth.js.org/)
-- **Styling:** [Tailwind CSS](https://tailwindcss.com/)
-- **UI Components:** [Radix UI](https://www.radix-ui.com/) and [shadcn/ui](https://ui.shadcn.com/)
-- **State Management:** [Redux Toolkit](https://redux-toolkit.js.org/) and [Zustand](https://zustand-demo.pmnd.rs/)
-- **Form Management:** [React Hook Form](https://react-hook-form.com/)
-- **Data Fetching:** [React Query](https://tanstack.com/query/v3/)
-- **File Uploads:** [UploadThing](https://uploadthing.com/)
-- **Email:** [Resend](https://resend.com/)
-
-## Project Structure
-
-The project is organized into the following directories:
-
-```
-.
-├── app/                  # Main application code
-│   ├── (backend)/        # Backend-related components and logic
-│   ├── (check-out)/      # Checkout process components
-│   ├── (front-end)/      # Frontend-facing pages and components
-│   ├── (search)/         # Search functionality
-│   └── api/              # API routes
-├── components/           # Reusable UI components
-├── config/               # Application configuration
-├── context/              # React context providers
-├── hooks/                # Custom React hooks
-├── lib/                  # Library functions and utilities
-├── prisma/               # Prisma schema and migrations
-├── providers/            # Application-wide providers
-├── public/               # Static assets
-└── redux/                # Redux store and slices
+```bash
+pnpm install
 ```
 
-## Available Scripts
+### Environment variables
 
-- `pnpm dev`: Starts the development server.
-- `pnpm build`: Builds the application for production.
-- `pnpm start`: Starts the production server.
-- `pnpm lint`: Lints the codebase.
-- `pnpm prisma generate`: Generates the Prisma client.
-- `pnpm prisma db push`: Pushes the Prisma schema to the database.
+Create a `.env.local` in the project root.
 
-## Environment Variables
+Minimum for most local flows:
 
-To run this project, you will need to create a `.env` file in the root of your project and add the following environment variables:
+```bash
+# Prisma
+DATABASE_URL="mongodb+srv://..."
 
-- `DATABASE_URL`: The connection string for your database.
-- `NEXTAUTH_URL`: The URL of your application.
-- `NEXTAUTH_SECRET`: A secret key for NextAuth.js.
-- 
-{{ others are UploadThing Credentials }}
+# NextAuth
+NEXTAUTH_URL="http://localhost:3000"
+NEXTAUTH_SECRET="your-secret"
+```
 
-For a full list of environment variables, see the `.env.example` file.
+Optional / feature toggles:
 
-## License
+```bash
+# Temporary homepage redirect (used by middleware.ts)
+# Example: HOME_REDIRECT_PATH=/d/gift-hampers
+HOME_REDIRECT_PATH=""
+```
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+Third-party services (enable as needed):
+
+- UploadThing credentials
+- Resend (email)
+
+### Prisma
+
+```bash
+pnpm prisma generate
+pnpm prisma db push
+```
+
+### Run
+
+```bash
+pnpm dev
+```
+
+Open `http://localhost:3000`.
+
+## Scripts
+
+- `pnpm dev` - start dev server
+- `pnpm build` - production build
+- `pnpm start` - run production server
+- `pnpm lint` - lint
+- `pnpm prisma generate` - generate Prisma client
+- `pnpm prisma db push` - sync schema to database
+
+## API notes
+
+- `GET /api/products/spotlight`
+  - Returns a random active in-stock product with fields used by the promo bar.
+
+## Deployment (Vercel)
+
+- Configure `DATABASE_URL` in Vercel Environment Variables.
+- Configure NextAuth variables (`NEXTAUTH_URL`, `NEXTAUTH_SECRET`).
+- If you want the temporary homepage redirect, set `HOME_REDIRECT_PATH` (e.g. `/d/gift-hampers`).
+
+## Troubleshooting
+
+- **MongoDB SCRAM / bad auth**
+  - Ensure `DATABASE_URL` credentials are correct.
+  - If your MongoDB password contains special characters (e.g. `:` `@` `/`), **URL-encode** it before putting it into `DATABASE_URL`.
+
