@@ -13,6 +13,7 @@ import toast from "react-hot-toast";
 // Types
 interface OrderConfirmationProps {
   orderId: string
+  mobileMoneyInternalRef?: string | null
 }
 
 interface BuyNowCompProps {
@@ -20,7 +21,56 @@ interface BuyNowCompProps {
 }
 
 // Order Confirmation Component
-const OrderConfirmation = ({ orderId }: OrderConfirmationProps) => {
+const OrderConfirmation = ({ orderId, mobileMoneyInternalRef }: OrderConfirmationProps) => {
+  const [mmStatus, setMmStatus] = useState<string | null>(null)
+  const [isChecking, setIsChecking] = useState(false)
+
+  const checkMobileMoneyStatus = async () => {
+    if (!mobileMoneyInternalRef) return
+    setIsChecking(true)
+    try {
+      const res = await fetch(`/api/relworx/mobile-money/check-status`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ orderId, internal_reference: mobileMoneyInternalRef }),
+      })
+      const data = await res.json().catch(() => ({}))
+      const status = String(data?.data?.status || data?.data?.request_status || "").toUpperCase()
+      if (status) setMmStatus(status)
+      if (!res.ok) {
+        toast.error(data?.message || "Failed to check payment status")
+      }
+    } catch (e) {
+      console.error(e)
+      toast.error("Failed to check payment status")
+    } finally {
+      setIsChecking(false)
+    }
+  }
+
+  React.useEffect(() => {
+    if (!mobileMoneyInternalRef) return
+    let isMounted = true
+    let attempts = 0
+    const maxAttempts = 12
+
+    const tick = async () => {
+      if (!isMounted) return
+      attempts += 1
+      await checkMobileMoneyStatus()
+      const current = (mmStatus || "").toUpperCase()
+      if (current === "SUCCESS" || current === "FAILED") return
+      if (attempts >= maxAttempts) return
+      setTimeout(tick, 6000)
+    }
+
+    setTimeout(tick, 1500)
+    return () => {
+      isMounted = false
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [mobileMoneyInternalRef])
+
   return (
     <div className="flex items-center justify-center min-h-[60vh]">
       <div className="text-center bg-white p-8 rounded-2xl shadow-xl max-w-md mx-4">
@@ -33,6 +83,25 @@ const OrderConfirmation = ({ orderId }: OrderConfirmationProps) => {
         </div>
 
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
+        {mobileMoneyInternalRef && (
+          <div className="w-full space-y-2 mb-3">
+            <div className="text-xs text-gray-600">
+              Mobile Money Ref: <span className="font-mono">{mobileMoneyInternalRef}</span>
+            </div>
+            <div className="text-sm font-semibold text-gray-800">
+              Payment Status: <span className="font-bold">{mmStatus || "PENDING"}</span>
+            </div>
+            <button
+              onClick={checkMobileMoneyStatus}
+              disabled={isChecking}
+              className={`w-full px-6 py-3 rounded-lg border font-semibold transition-colors duration-200 ${
+                isChecking ? "bg-gray-100 text-gray-500" : "bg-white hover:bg-gray-50 text-gray-800"
+              }`}
+            >
+              {isChecking ? "Checking..." : "Check Payment Status"}
+            </button>
+          </div>
+        )}
         <Link href={`/order-confirmation/${orderId}`} passHref>
   <a
     target="_blank"
@@ -143,8 +212,8 @@ const DeliveryDetailsSection = ({
   hasSingleItem: boolean
   singleItem: any
   cartItems: any[]
-  paymentMethod: string
-  setPaymentMethod: (method: string) => void
+  paymentMethod: "cod" | "mobile_money" | "card"
+  setPaymentMethod: React.Dispatch<React.SetStateAction<"cod" | "mobile_money" | "card">>
 }) => (
   <div className="mb-6 bg-white lg:p-8 p-6 rounded-xl shadow-lg border border-gray-100">
     <div className="flex justify-between items-center mb-6">
@@ -351,6 +420,7 @@ export default function BuyNowComp({ email }: BuyNowCompProps) {
   const [isRedirecting, setIsRedirecting] = useState(false)
   const [confirmedOrderId, setConfirmedOrderId] = useState<string | null>(null)
   const [paymentMethod, setPaymentMethod] = useState<"cod" | "mobile_money" | "card">("cod")
+  const [mobileMoneyInternalRef, setMobileMoneyInternalRef] = useState<string | null>(null)
 
   // Redux selectors
   const singleItem = useSelector((store: any) => store.buynow)
@@ -434,6 +504,7 @@ const handleOrder = async () => {
           toast.error(mmData?.message || "Failed to initiate mobile money payment")
         } else {
           toast.success("Mobile money payment initiated. Please approve on your phone.")
+          setMobileMoneyInternalRef(mmData?.internal_reference || null)
         }
       }
 
@@ -481,7 +552,7 @@ const handleOrder = async () => {
 
   // Show order confirmation if redirecting
   if (isRedirecting) {
-    return <OrderConfirmation orderId={confirmedOrderId} />
+    return <OrderConfirmation orderId={confirmedOrderId} mobileMoneyInternalRef={mobileMoneyInternalRef} />
   }
 
   return (
