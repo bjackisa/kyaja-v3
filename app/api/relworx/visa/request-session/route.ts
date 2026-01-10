@@ -56,7 +56,7 @@ export async function POST(req: NextRequest) {
   } catch (e: any) {
     console.error("Relworx card request-session error:", e?.data || e);
     return NextResponse.json(
-      { message: e?.message || "Server error" },
+      { message: e?.message || "Server error", data: e?.data },
       { status: typeof e?.status === "number" ? e.status : 500 }
     );
   }

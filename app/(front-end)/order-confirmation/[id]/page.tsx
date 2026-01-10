@@ -84,6 +84,7 @@ const OrderDetails = async ({ id }) => {
   }
 
   const subTotal = order?.orderItems?.reduce((acc, item) => acc + (item.price * item.quantity), 0) || 0;
+  const ugxTotal = Math.round(subTotal);
   
   return (
     <div className="w-full max-w-3xl mx-auto">
@@ -214,7 +215,7 @@ const OrderDetails = async ({ id }) => {
                     {/* Price */}
                     <div className="text-right flex-shrink-0">
                       <p className="font-bold text-lg text-gray-900 dark:text-white">
-                        UGX {formatMoney((item.price * item.quantity).toFixed(2))}
+                        UGX {formatMoney(Math.round(item.price * item.quantity))}
                       </p>
                     </div>
                   </div>
@@ -234,7 +235,7 @@ const OrderDetails = async ({ id }) => {
             <div className="flex justify-between items-center py-2">
               <span className="text-gray-600 dark:text-gray-300">Subtotal</span>
               <span className="font-medium text-gray-900 dark:text-white">
-                UGX {formatMoney(subTotal.toFixed(2))}
+                UGX {formatMoney(ugxTotal)}
               </span>
             </div>
             
@@ -250,7 +251,7 @@ const OrderDetails = async ({ id }) => {
                 Total
               </span>
               <span className="text-lg font-bold text-green-600 dark:text-green-400">
-                UGX {formatMoney(subTotal.toFixed(2))}
+                UGX {formatMoney(ugxTotal)}
               </span>
             </div>
             

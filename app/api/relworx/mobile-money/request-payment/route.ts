@@ -1,5 +1,5 @@
 import db from "@/lib/db";
-import { getRelworxAccountNo, relworxFetch } from "@/lib/relworx";
+import { getRelworxAccountNo, normalizeUgMsisdn, relworxFetch } from "@/lib/relworx";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
@@ -20,9 +20,16 @@ export async function POST(req: NextRequest) {
     if (!Number.isFinite(amount) || amount <= 0) {
       return NextResponse.json({ message: "Order amount is invalid" }, { status: 400 });
     }
+    if (amount < 500) {
+      return NextResponse.json({ message: "Minimum mobile money amount is UGX 500" }, { status: 400 });
+    }
 
     const accountNo = getRelworxAccountNo();
     const reference = order.orderNumber || `order-${order.id}`;
+    const normalizedMsisdn = normalizeUgMsisdn(msisdn);
+    if (!normalizedMsisdn || !normalizedMsisdn.startsWith("+")) {
+      return NextResponse.json({ message: "Invalid msisdn" }, { status: 400 });
+    }
 
     const data: any = await relworxFetch({
       path: "/mobile-money/request-payment",
@@ -30,7 +37,7 @@ export async function POST(req: NextRequest) {
       body: {
         account_no: accountNo,
         reference,
-        msisdn,
+        msisdn: normalizedMsisdn,
         currency: "UGX",
         amount,
         description: `Order ${reference}`,
@@ -62,7 +69,7 @@ export async function POST(req: NextRequest) {
   } catch (e: any) {
     console.error("Relworx mobile money request error:", e?.data || e);
     return NextResponse.json(
-      { message: e?.message || "Server error" },
+      { message: e?.message || "Server error", data: e?.data },
       { status: typeof e?.status === "number" ? e.status : 500 }
     );
   }

@@ -102,22 +102,21 @@ const OrderConfirmation = ({ orderId, mobileMoneyInternalRef }: OrderConfirmatio
             </button>
           </div>
         )}
-        <Link href={`/order-confirmation/${orderId}`} passHref>
-  <a
-    target="_blank"
-    rel="noopener noreferrer"
-  >
-    <button className="w-full sm:w-auto px-6 py-3 bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-lg transition-colors duration-200 shadow-md hover:shadow-lg">
-      View Receipt
-    </button>
-  </a>
-</Link>
+        <Link
+          href={`/order-confirmation/${orderId}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="w-full sm:w-auto px-6 py-3 bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-lg transition-colors duration-200 shadow-md hover:shadow-lg inline-flex items-center justify-center"
+        >
+          View Receipt
+        </Link>
 
-          <Link href="/">
-            <button className="w-full sm:w-auto px-6 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold rounded-lg transition-colors duration-200 border border-gray-300 hover:border-gray-400">
-              Continue Shopping
-            </button>
-          </Link>
+        <Link
+          href="/"
+          className="w-full sm:w-auto px-6 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold rounded-lg transition-colors duration-200 border border-gray-300 hover:border-gray-400 inline-flex items-center justify-center"
+        >
+          Continue Shopping
+        </Link>
         </div>
       </div>
     </div>
@@ -443,6 +442,14 @@ export default function BuyNowComp({ email }: BuyNowCompProps) {
     }, 0)
     .toFixed(2)
 
+  const subTotalUgx = Math.round(
+    buyItems.reduce((acc: number, currentItem: any) => {
+      const qty = Number(currentItem.qty || 1)
+      const price = Number(currentItem.salePrice || 0)
+      return acc + price * qty
+    }, 0)
+  )
+
   // Utility functions
   const generateOrderNumber = () => {
     const timestamp = Date.now()
@@ -474,7 +481,7 @@ const handleOrder = async () => {
       phone, 
       address, 
       orderNumber, 
-      totalOrderAmount: Number.parseInt(subTotal), 
+      totalOrderAmount: subTotalUgx, 
       paymentMethod: selectedPaymentMethodLabel, 
       orderItems: buyItems, 
     } 
@@ -500,7 +507,7 @@ const handleOrder = async () => {
 
         const mmData = await mmRes.json().catch(() => ({}))
         if (!mmRes.ok) {
-          console.error("Mobile money initiation failed:", mmData)
+          console.error("Mobile money initiation failed:", JSON.stringify(mmData, null, 2))
           toast.error(mmData?.message || "Failed to initiate mobile money payment")
         } else {
           toast.success("Mobile money payment initiated. Please approve on your phone.")
@@ -517,7 +524,7 @@ const handleOrder = async () => {
 
         const cardData = await cardRes.json().catch(() => ({}))
         if (!cardRes.ok || !cardData?.payment_url) {
-          console.error("Card session creation failed:", cardData)
+          console.error("Card session creation failed:", JSON.stringify(cardData, null, 2))
           toast.error(cardData?.message || "Failed to start card payment")
         } else {
           window.location.href = cardData.payment_url
