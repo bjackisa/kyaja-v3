@@ -71,7 +71,14 @@ const OrderSkeleton = () => {
 const OrderDetails = async ({ id }) => {
   const order = await getData(`orders/${id}`);
   
-  if (!order) {
+  const isValidOrder =
+    order &&
+    !Array.isArray(order) &&
+    typeof order === "object" &&
+    typeof order.id === "string" &&
+    typeof order.name === "string";
+
+  if (!isValidOrder) {
     return (
       <div className="w-full max-w-4xl mx-auto bg-white dark:bg-slate-800 rounded-xl shadow-lg p-8 text-center">
         <div className="text-red-500 mb-4">
