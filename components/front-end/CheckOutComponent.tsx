@@ -137,10 +137,18 @@ const DeliveryDetailsSection = ({
   hasSingleItem,
   singleItem,
   cartItems,
+  paymentMethod,
+  setPaymentMethod,
+  mobileMoneyPhone,
+  setMobileMoneyPhone,
 }: {
   hasSingleItem: boolean
   singleItem: any
   cartItems: any[]
+  paymentMethod: string
+  setPaymentMethod: (method: string) => void
+  mobileMoneyPhone: string
+  setMobileMoneyPhone: (phone: string) => void
 }) => (
   <div className="mb-6 bg-white lg:p-8 p-6 rounded-xl shadow-lg border border-gray-100">
     <div className="flex justify-between items-center mb-6">
@@ -198,15 +206,64 @@ const DeliveryDetailsSection = ({
           3. PAYMENT METHOD
         </h2>
       </div>
-      <div className="bg-gradient-to-r from-green-50 to-emerald-50 p-5 rounded-xl border border-green-200">
-        <div className="bg-green-100 text-green-800 text-sm font-medium p-4 rounded-lg flex items-center gap-2">
-          💳 <span>Pay on Delivery (MTN Money / Airtel Money / Cash)</span>
+      <div className="bg-gradient-to-r from-green-50 to-emerald-50 p-5 rounded-xl border border-green-200 space-y-4">
+        <div>
+          <label className="flex items-center gap-2 p-4 rounded-lg bg-green-100 text-green-800 text-sm font-medium cursor-pointer">
+            <input
+              type="radio"
+              name="paymentMethod"
+              value="delivery"
+              checked={paymentMethod === 'delivery'}
+              onChange={() => setPaymentMethod('delivery')}
+              className="form-radio h-4 w-4 text-orange-600"
+            />
+            <span>💳 Pay on Delivery (MTN Money / Airtel Money / Cash)</span>
+          </label>
+          <p className="text-xs text-gray-600 mt-2">Pay conveniently when your order arrives at your doorstep</p>
         </div>
-        <p className="text-xs text-gray-600 mt-2">Pay conveniently when your order arrives at your doorstep</p>
+
+        <div>
+          <label className="flex items-center gap-2 p-4 rounded-lg bg-blue-100 text-blue-800 text-sm font-medium cursor-pointer">
+            <input
+              type="radio"
+              name="paymentMethod"
+              value="mobile_money"
+              checked={paymentMethod === 'mobile_money'}
+              onChange={() => setPaymentMethod('mobile_money')}
+              className="form-radio h-4 w-4 text-orange-600"
+            />
+            <span>📱 Pay with Mobile Money (MTN / Airtel)</span>
+          </label>
+          {paymentMethod === 'mobile_money' && (
+            <div className="mt-2">
+              <input
+                type="text"
+                placeholder="Enter your phone number (+256...)"
+                value={mobileMoneyPhone}
+                onChange={(e) => setMobileMoneyPhone(e.target.value)}
+                className="w-full px-4 py-2 border rounded-lg"
+              />
+            </div>
+          )}
+        </div>
+
+        <div>
+          <label className="flex items-center gap-2 p-4 rounded-lg bg-purple-100 text-purple-800 text-sm font-medium cursor-pointer">
+            <input
+              type="radio"
+              name="paymentMethod"
+              value="card"
+              checked={paymentMethod === 'card'}
+              onChange={() => setPaymentMethod('card')}
+              className="form-radio h-4 w-4 text-orange-600"
+            />
+            <span>💳 Pay with Card (Visa / Mastercard)</span>
+          </label>
+        </div>
       </div>
     </div>
   </div>
-)
+);
 
 // Order Summary Component
 const OrderSummary = ({
@@ -315,6 +372,8 @@ export default function BuyNowComp({ email }: BuyNowCompProps) {
   // State
   const [address, setAddress] = useState(user?.address || "")
   const [phone, setPhone] = useState(user?.phone || "")
+  const [paymentMethod, setPaymentMethod] = useState("delivery") // 'delivery', 'mobile_money', 'card'
+  const [mobileMoneyPhone, setMobileMoneyPhone] = useState("")
   const [isLoadingOrder, setIsLoadingOrder] = useState(false)
   const [isRedirecting, setIsRedirecting] = useState(false)
   const [confirmedOrderId, setConfirmedOrderId] = useState<string | null>(null)
@@ -347,65 +406,99 @@ export default function BuyNowComp({ email }: BuyNowCompProps) {
     return `ORD-${timestamp}-${randomString}`
   }
 
- // Event handlers 
-const handleOrder = async () => { 
-  if (!address || !phone) { 
-    toast.error("Please click the Change button to update your profile before checkout.") 
-    return 
-  } 
+// Event handlers
+const handleOrder = async () => {
+  if (!address || !phone) {
+    toast.error("Please click the Change button to update your profile before checkout.");
+    return;
+  }
 
-  setIsLoadingOrder(true) 
-  
-  try { 
-    const orderNumber = generateOrderNumber() 
-    const orderData = { 
-      userId: user?.id, 
-      name: user?.name, 
-      email, 
-      phone, 
-      address, 
-      orderNumber, 
-      totalOrderAmount: Number.parseInt(subTotal), 
-      paymentMethod: "Pay on Delivery", 
-      orderItems: buyItems, 
-    } 
+  setIsLoadingOrder(true);
+  const orderNumber = generateOrderNumber();
 
-    const response = await fetch(`${baseUrl}/api/orders`, { 
-      method: "POST", 
-      headers: { 
-        "Content-Type": "application/json", 
-      }, 
-      body: JSON.stringify(orderData), 
-    }) 
+  // Create the order in the database first, with a status of "Pending Payment"
+  // This is important for reconciliation with the webhook
+  const orderData = {
+    userId: user?.id,
+    name: user?.name,
+    email,
+    phone,
+    address,
+    orderNumber,
+    totalOrderAmount: Number.parseInt(subTotal),
+    paymentMethod: paymentMethod,
+    orderItems: buyItems,
+    orderStatus: "Pending Payment" // Make sure your DB schema supports this
+  };
 
-    // Handle different response statuses
-    if (response.status === 201) { 
-      const data = await response.json() 
-      // console.log('Order placed successfully:', data)
-      toast.success("Order successfully placed!") 
-      setConfirmedOrderId(data.id) 
-      setIsRedirecting(true) 
-    } else {
-      // Log the error for debugging
-      const errorData = await response.json().catch(() => ({}))
-      console.error('Order failed:', response.status, errorData)
-      
-      if (response.status === 400) {
-        toast.error("Invalid order data. Please check your information.")
-      } else if (response.status === 500) {
-        toast.error("Server error. Please try again later.")
+  try {
+    const orderResponse = await fetch(`${baseUrl}/api/orders`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(orderData),
+    });
+
+    if (!orderResponse.ok) {
+      throw new Error("Failed to create order");
+    }
+
+    const newOrder = await orderResponse.json();
+    const orderId = newOrder.id;
+
+    if (paymentMethod === 'delivery') {
+      toast.success("Order successfully placed!");
+      setConfirmedOrderId(orderId);
+      setIsRedirecting(true);
+    } else if (paymentMethod === 'mobile_money') {
+      if (!mobileMoneyPhone) {
+        toast.error("Please enter your mobile money phone number.");
+        setIsLoadingOrder(false);
+        return;
+      }
+
+      const paymentResponse = await fetch('/api/payments/request-mobile', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          msisdn: mobileMoneyPhone,
+          amount: subTotal,
+          reference: orderNumber // Use the order number as the reference
+        })
+      });
+
+      const paymentResult = await paymentResponse.json();
+      if (paymentResponse.ok) {
+        toast.success(`Payment requested. Ref: ${paymentResult.internalReference}. Please check your phone to approve the transaction.`);
+        router.push('/payment-pending');
       } else {
-        toast.error("Failed to place the order. Please try again.")
+        toast.error(`Error: ${paymentResult.error}`);
+      }
+
+    } else if (paymentMethod === 'card') {
+      const paymentResponse = await fetch('/api/payments/request-card', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          amount: subTotal,
+          reference: orderNumber
+        })
+      });
+
+      const paymentResult = await paymentResponse.json();
+      if (paymentResponse.ok) {
+        window.location.href = paymentResult.paymentUrl;
+      } else {
+        toast.error(`Error: ${paymentResult.error}`);
       }
     }
-  } catch (error) { 
-    console.error('Order error:', error)
-    toast.error("Network error. Please check your connection and try again.") 
+
+  } catch (error) {
+    console.error('Order error:', error);
+    toast.error("An error occurred while placing the order.");
   } finally {
-    // Always reset loading state
-    setIsLoadingOrder(false)
+    setIsLoadingOrder(false);
   }
-}
+};
 
   // Show order confirmation if redirecting
   if (isRedirecting) {
@@ -423,7 +516,15 @@ const handleOrder = async () => {
           setPhone={setPhone}
         />
 
-        <DeliveryDetailsSection hasSingleItem={hasSingleItem} singleItem={singleItem} cartItems={cartItems} />
+        <DeliveryDetailsSection
+          hasSingleItem={hasSingleItem}
+          singleItem={singleItem}
+          cartItems={cartItems}
+          paymentMethod={paymentMethod}
+          setPaymentMethod={setPaymentMethod}
+          mobileMoneyPhone={mobileMoneyPhone}
+          setMobileMoneyPhone={setMobileMoneyPhone}
+        />
       </div>
 
       <OrderSummary
