@@ -223,6 +223,16 @@ model Order {
   orderNumber      String?
   totalOrderAmount Int?
   paymentMethod    String
+  paymentStatus    String?
+  paymentCurrency  String?
+  paymentAmount    Float?
+  relworxInternalReference String?
+  relworxCustomerReference String?
+  relworxProvider  String?
+  relworxCharge    Float?
+  relworxPaymentUrl String?
+  relworxCompletedAt DateTime?
+  relworxLastStatusCheckedAt DateTime?
   orderItems       OrderItem[]
   orderStatus      OrderStatus @default(PROCESSING)
   createdAt        DateTime    @default(now())

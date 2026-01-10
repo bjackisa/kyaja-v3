@@ -3,7 +3,7 @@
 import { MdCheckCircle, MdLocalShipping } from "react-icons/md"
 import { FaSpinner } from "react-icons/fa"
 import Link from "next/link"
-import { useState } from "react"
+import React, { useState } from "react"
 import { useSelector, useDispatch } from "react-redux"
 import { useSession } from "next-auth/react"
 import { useRouter, useSearchParams } from "next/navigation"
@@ -107,7 +107,7 @@ const CustomerDetailsSection = ({
 }
 
 // Product Item Component
-const ProductItem = ({ item, quantity = 1 }: { item: any; quantity?: number }) => (
+const ProductItem: React.FC<{ item: any; quantity?: number }> = ({ item, quantity = 1 }) => (
   <div className="p-5 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl border border-blue-200">
     <div className="flex items-center">
       <div className="relative">
@@ -137,10 +137,14 @@ const DeliveryDetailsSection = ({
   hasSingleItem,
   singleItem,
   cartItems,
+  paymentMethod,
+  setPaymentMethod,
 }: {
   hasSingleItem: boolean
   singleItem: any
   cartItems: any[]
+  paymentMethod: string
+  setPaymentMethod: (method: string) => void
 }) => (
   <div className="mb-6 bg-white lg:p-8 p-6 rounded-xl shadow-lg border border-gray-100">
     <div className="flex justify-between items-center mb-6">
@@ -198,11 +202,40 @@ const DeliveryDetailsSection = ({
           3. PAYMENT METHOD
         </h2>
       </div>
-      <div className="bg-gradient-to-r from-green-50 to-emerald-50 p-5 rounded-xl border border-green-200">
-        <div className="bg-green-100 text-green-800 text-sm font-medium p-4 rounded-lg flex items-center gap-2">
-          💳 <span>Pay on Delivery (MTN Money / Airtel Money / Cash)</span>
-        </div>
-        <p className="text-xs text-gray-600 mt-2">Pay conveniently when your order arrives at your doorstep</p>
+      <div className="bg-gradient-to-r from-green-50 to-emerald-50 p-5 rounded-xl border border-green-200 space-y-3">
+        <label className="flex items-center gap-3 bg-white/60 p-3 rounded-lg border border-green-200 cursor-pointer">
+          <input
+            type="radio"
+            name="paymentMethod"
+            value="cod"
+            checked={paymentMethod === "cod"}
+            onChange={() => setPaymentMethod("cod")}
+          />
+          <span className="text-sm font-medium text-gray-800">Cash on Delivery</span>
+        </label>
+        <label className="flex items-center gap-3 bg-white/60 p-3 rounded-lg border border-green-200 cursor-pointer">
+          <input
+            type="radio"
+            name="paymentMethod"
+            value="mobile_money"
+            checked={paymentMethod === "mobile_money"}
+            onChange={() => setPaymentMethod("mobile_money")}
+          />
+          <span className="text-sm font-medium text-gray-800">Mobile Money (MTN / Airtel)</span>
+        </label>
+        <label className="flex items-center gap-3 bg-white/60 p-3 rounded-lg border border-green-200 cursor-pointer">
+          <input
+            type="radio"
+            name="paymentMethod"
+            value="card"
+            checked={paymentMethod === "card"}
+            onChange={() => setPaymentMethod("card")}
+          />
+          <span className="text-sm font-medium text-gray-800">Credit/Debit Card (Visa/Mastercard)</span>
+        </label>
+        <p className="text-xs text-gray-600">
+          For Mobile Money, you will receive a prompt on your phone to approve. For Card, you will be redirected to a secure checkout.
+        </p>
       </div>
     </div>
   </div>
@@ -303,7 +336,6 @@ const OrderSummary = ({
 
 // Main Component
 export default function BuyNowComp({ email }: BuyNowCompProps) {
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL
   const dispatch = useDispatch()
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -318,6 +350,7 @@ export default function BuyNowComp({ email }: BuyNowCompProps) {
   const [isLoadingOrder, setIsLoadingOrder] = useState(false)
   const [isRedirecting, setIsRedirecting] = useState(false)
   const [confirmedOrderId, setConfirmedOrderId] = useState<string | null>(null)
+  const [paymentMethod, setPaymentMethod] = useState<"cod" | "mobile_money" | "card">("cod")
 
   // Redux selectors
   const singleItem = useSelector((store: any) => store.buynow)
@@ -358,6 +391,12 @@ const handleOrder = async () => {
   
   try { 
     const orderNumber = generateOrderNumber() 
+    const selectedPaymentMethodLabel =
+      paymentMethod === "cod"
+        ? "Cash on Delivery"
+        : paymentMethod === "mobile_money"
+          ? "Mobile Money"
+          : "Card";
     const orderData = { 
       userId: user?.id, 
       name: user?.name, 
@@ -366,11 +405,11 @@ const handleOrder = async () => {
       address, 
       orderNumber, 
       totalOrderAmount: Number.parseInt(subTotal), 
-      paymentMethod: "Pay on Delivery", 
+      paymentMethod: selectedPaymentMethodLabel, 
       orderItems: buyItems, 
     } 
 
-    const response = await fetch(`${baseUrl}/api/orders`, { 
+    const response = await fetch(`/api/orders`, { 
       method: "POST", 
       headers: { 
         "Content-Type": "application/json", 
@@ -381,7 +420,40 @@ const handleOrder = async () => {
     // Handle different response statuses
     if (response.status === 201) { 
       const data = await response.json() 
-      // console.log('Order placed successfully:', data)
+
+      if (paymentMethod === "mobile_money") {
+        const mmRes = await fetch(`/api/relworx/mobile-money/request-payment`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ orderId: data.id, msisdn: phone }),
+        })
+
+        const mmData = await mmRes.json().catch(() => ({}))
+        if (!mmRes.ok) {
+          console.error("Mobile money initiation failed:", mmData)
+          toast.error(mmData?.message || "Failed to initiate mobile money payment")
+        } else {
+          toast.success("Mobile money payment initiated. Please approve on your phone.")
+        }
+      }
+
+      if (paymentMethod === "card") {
+        const cardRes = await fetch(`/api/relworx/visa/request-session`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ orderId: data.id }),
+        })
+
+        const cardData = await cardRes.json().catch(() => ({}))
+        if (!cardRes.ok || !cardData?.payment_url) {
+          console.error("Card session creation failed:", cardData)
+          toast.error(cardData?.message || "Failed to start card payment")
+        } else {
+          window.location.href = cardData.payment_url
+          return
+        }
+      }
+
       toast.success("Order successfully placed!") 
       setConfirmedOrderId(data.id) 
       setIsRedirecting(true) 
@@ -423,7 +495,13 @@ const handleOrder = async () => {
           setPhone={setPhone}
         />
 
-        <DeliveryDetailsSection hasSingleItem={hasSingleItem} singleItem={singleItem} cartItems={cartItems} />
+        <DeliveryDetailsSection
+          hasSingleItem={hasSingleItem}
+          singleItem={singleItem}
+          cartItems={cartItems}
+          paymentMethod={paymentMethod}
+          setPaymentMethod={setPaymentMethod}
+        />
       </div>
 
       <OrderSummary
