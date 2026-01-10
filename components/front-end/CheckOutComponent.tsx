@@ -251,10 +251,11 @@ const DeliveryDetailsSection = ({
 
       {!hasSingleItem && (
         <div className="flex justify-center items-center pt-4">
-          <Link href="/cart">
-            <button className="py-3 px-8 font-semibold hover:bg-orange-100 text-orange-600 rounded-lg border-2 border-orange-200 transition-all duration-200 hover:scale-105 hover:shadow-md">
-              🛒 Modify Cart
-            </button>
+          <Link
+            href="/cart"
+            className="py-3 px-8 font-semibold hover:bg-orange-100 text-orange-600 rounded-lg border-2 border-orange-200 transition-all duration-200 hover:scale-105 hover:shadow-md inline-flex items-center justify-center"
+          >
+            🛒 Modify Cart
           </Link>
         </div>
       )}

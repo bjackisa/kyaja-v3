@@ -199,12 +199,13 @@ export default function BuyNow() {
           {
              !hasSingleItem && (
                 <div className="flex justify-center items-center">
-              <Link href="/cart">
-                <button className="py-2 px-7 font-semibold hover:bg-[#ef7e0622] text-[#f89a1e] rounded-sm">
-                  Modify cart
-                </button>
+              <Link
+                href="/cart"
+                className="py-2 px-7 font-semibold hover:bg-[#ef7e0622] text-[#f89a1e] rounded-sm inline-flex items-center justify-center"
+              >
+                Modify cart
               </Link>
-            </div>
+                </div>
              )
           }
           </div>
